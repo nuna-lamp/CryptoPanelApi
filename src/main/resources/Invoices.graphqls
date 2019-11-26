@@ -1,0 +1,46 @@
+type Query {
+    invoicesById(id: ID): Invoices
+    paymentByID(id:ID): Invoices_Payments
+}
+
+type Invoices {
+    id : ID
+    uuid : String
+    memo : String
+    email : String
+    first_name : String
+    lastName : String
+    status : String
+    return_url : String
+    callback_url : String
+    expires_at : String
+    created_at : String
+    update_at : String
+    seller_name : String
+    amount : String
+    currency : String
+    payment_id : Invoices_Payments
+    cancel_url : String
+    extra_data : String
+    endpoint : String
+    doi : String
+    ip : String
+    option_timestamp : String
+    selected_currencies : String
+    endpoint_version : String
+    note : String
+}
+
+type Invoices_Payments {
+    id : ID
+    invoice_id :String
+    uuid: String
+    currency :String
+    electrum_amount : Float
+    electrum_id : String
+    electrum_uri :String
+    electrum_address : String
+    electrum_expires_at :String
+    created_at : String
+    update_at :String
+}
