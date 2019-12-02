@@ -1,9 +1,22 @@
-type Query {
-    invoicesById(id: ID): Invoices
-    paymentByID(id:ID): Invoices_Payments
+schema {
+    query: Query
 }
 
-type Invoices {
+type Query{
+    findAllInvoices : Invoice
+    invoiceById(id: ID): Invoice
+    findByUuid(uuid: String):Invoice
+    findByStatus(status: String):Invoice
+    Invoice_PaymentsByID(id:ID): Invoice
+}
+
+enum Status {
+    Open
+    Paid
+    Expired
+}
+
+type Invoice {
     id : ID
     uuid : String
     memo : String
@@ -19,7 +32,7 @@ type Invoices {
     seller_name : String
     amount : String
     currency : String
-    payment_id : Invoices_Payments
+    payment_id : Invoice_Payments
     cancel_url : String
     extra_data : String
     endpoint : String
@@ -30,8 +43,7 @@ type Invoices {
     endpoint_version : String
     note : String
 }
-
-type Invoices_Payments {
+type Invoice_Payments {
     id : ID
     invoice_id :String
     uuid: String
@@ -44,3 +56,12 @@ type Invoices_Payments {
     created_at : String
     update_at :String
 }
+
+type InvoiceMutation{
+    newInvoice(first_name: String, last_name:String): Invoice
+    deleteInvoice(id:ID): Boolean
+}
+
+
+
+

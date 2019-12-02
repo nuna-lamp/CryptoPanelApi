@@ -42,6 +42,9 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    compile("com.h2database:h2")
+    compile 'com.graphql-java:graphiql-spring-boot-starter:5.0.2'
+
 }
 
 test {

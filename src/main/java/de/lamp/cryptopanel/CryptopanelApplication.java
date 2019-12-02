@@ -1,6 +1,6 @@
 package de.lamp.cryptopanel;
 
-import de.lamp.cryptopanel.entities.Invoices;
+import de.lamp.cryptopanel.model.Invoices;
 import de.lamp.cryptopanel.repositories.InvoicesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,6 @@ public class CryptopanelApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CryptopanelApplication.class, args);
-        System.out.println("Welcome to Cryptopanel");
     }
 
     @Bean
@@ -56,6 +55,8 @@ public class CryptopanelApplication {
 
  */
     }
+
+
 }
 
 

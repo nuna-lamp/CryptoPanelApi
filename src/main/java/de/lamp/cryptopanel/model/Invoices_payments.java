@@ -1,7 +1,14 @@
-package de.lamp.cryptopanel.entities;
+package de.lamp.cryptopanel.model;
 
-public class Invoices_payments  {
+import javax.persistence.*;
 
+@Entity
+@Table(name = "invoice_payments")
+public class Invoices_payments {
+
+    @Id
+    @Column(name = "payment_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private Integer invoice_id;
     private String uuid;

@@ -1,7 +1,11 @@
-package de.lamp.cryptopanel.entities;
+package de.lamp.cryptopanel.model;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Collection;
 
 @Entity
 @Table(name = "invoices")
@@ -10,21 +14,17 @@ public class Invoices implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String uuid;
+    private char uuid;
     private String memo;
     private String email;
     private String first_name;
     private String lastName;
     private String status;
-    //private Enum status;
     private String return_url;
     private String callback_url;
-    private String expires_at;
-    // private Timestamp expires_at;
-    private String created_at;
-    //private Timestamp created_at;
-    private String update_at;
-    //private Timestamp update_at;
+    private Timestamp expires_at;
+    private Timestamp created_at;
+    private Timestamp update_at;
     private String seller_name;
     private double amount;
     private String currency;
@@ -34,17 +34,16 @@ public class Invoices implements Serializable {
     private String endpoint;
     private int doi;
     private String ip;
-    private String option_timestamp;
-    // private Timestamp option_timestamp;
+    private Timestamp option_timestamp;
     private String selected_currencies;
     private String endpoint_version;
     private String note;
 
-    public Invoices(int id, String uuid, String memo, String email, String first_name, String last_name,
-                    String status, String return_url, String callback_url, String expires_at,
-                    String created_at, String update_at, String seller_name, double amount,
+    public Invoices(int id, char uuid, String memo, String email, String first_name, String last_name,
+                    String  status, String return_url, String callback_url, Timestamp expires_at,
+                    Timestamp created_at, Timestamp update_at, String seller_name, double amount,
                     String currency, Integer payment_id, String cancel_url, String extra_data, String endpoint,
-                    int doi, String ip, String option_timestamp, String selected_currencies,
+                    int doi, String ip, Timestamp option_timestamp, String selected_currencies,
                     String endpoint_version, String note) {
         this.id = id;
         this.uuid = uuid;
@@ -77,19 +76,15 @@ public class Invoices implements Serializable {
 
     }
 
-    public int getId() {
-        return id;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
-    public String getUuid() {
+    public char getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(char uuid) {
         this.uuid = uuid;
     }
 
@@ -149,27 +144,27 @@ public class Invoices implements Serializable {
         this.callback_url = callback_url;
     }
 
-    public String getExpires_at() {
+    public Timestamp getExpires_at() {
         return expires_at;
     }
 
-    public void setExpires_at(String expires_at) {
+    public void setExpires_at(Timestamp expires_at) {
         this.expires_at = expires_at;
     }
 
-    public String getCreated_at() {
+    public Timestamp getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(Timestamp created_at) {
         this.created_at = created_at;
     }
 
-    public String getUpdate_at() {
+    public Timestamp getUpdate_at() {
         return update_at;
     }
 
-    public void setUpdate_at(String update_at) {
+    public void setUpdate_at(Timestamp update_at) {
         this.update_at = update_at;
     }
 
@@ -245,11 +240,11 @@ public class Invoices implements Serializable {
         this.ip = ip;
     }
 
-    public String getOption_timestamp() {
+    public Timestamp getOption_timestamp() {
         return option_timestamp;
     }
 
-    public void setOption_timestamp(String option_timestamp) {
+    public void setOption_timestamp(Timestamp option_timestamp) {
         this.option_timestamp = option_timestamp;
     }
 
