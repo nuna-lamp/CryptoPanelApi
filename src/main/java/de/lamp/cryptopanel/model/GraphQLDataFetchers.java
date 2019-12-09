@@ -22,68 +22,42 @@ public class GraphQLDataFetchers {
     private InvoicesRepository getRepository() {
         return repository;
     }
+/*
+    public DataFetcher getInvoicesByIdDataFetcher() {
+        return dataFetchingEnvironment -> {
+            String id = dataFetchingEnvironment.getArgument("id");
+            return getRepository().findByTypeAndId(Invoices.class, Long.valueOf(id));
+        };
+    }
 
-    private static List<Map<String, Object>> invoices = Arrays.asList(
-            ImmutableMap.of("id", "invoice-1",
-                    "uuid", "e90c7a90-5796-11e9-8f48-3da631878411",
-                    "memo", "Unterstütze Bezahlen mit Krypto mit einer Spende",
-                    "payment_id", "Invoices_payments -1",
-                    "email", ""),
-            ImmutableMap.of("id", "invoice-2",
-                    "uuid", "e90c7a90-5796-11e9-8f48-3da631878412",
-                    "memo", "Unterstütze Bezahlen mit Krypto mit einer Spende",
-                    "payment_id", "Invoices_payments -2",
-                    "email", ""),
-            ImmutableMap.of("id", "invoice-3",
-                    "uuid", "e90c7a90-5796-11e9-8f48-3da631878415",
-                    "memo", "Unterstütze Bezahlen mit Krypto mit einer Spende",
-                    "payment_id", "Invoices_payments -4",
-                    "email", ""
-                    /*
-                    "return_url", "",
-                    "callback_url", "",
-                    "expires_at", "",
-                    "created_at", "",
-                    "update_at", "",
-                    "seller_name", "",
-                    "amount", "",
-                    "currency", "",*/
-                    //"payment_id", "Invoices_payments -1",
-                    /*"cancel_url", "",
-                    "extra_data", "",
-                    "endpoint", "",
-                    "doi", "",
-                    "ip", "",
-                    "option_timestamp", "",
-                    "selected_currencies", "",
-                    "endpoint_version", "",*/
-                    //"note", ""
-            )
-    );
+ */
 
-    private static List<Map<String, Object>> invoices_payments = Arrays.asList(
-            ImmutableMap.of("id", "invoices_payment-1",
-                    "invoid_id", " ",
-                    "uuid", " ",
-                    "curency", " "),
-            ImmutableMap.of("id", "invoices_payment-2",
-                    "invoid_id", " ",
-                    "uuid", " ",
-                    "curency", " "),
-            ImmutableMap.of("id", "invoices_payment-3",
-                    "invoid_id", " ",
-                    "uuid", " ",
-                    "curency", " ")
+    public DataFetcher getAllInvoicesDataFetcher() {
+        return dataFetchingEnvironment -> {
+            // List list = new ArrayList<Map<String, Object>>();
+            return repository == null ?
+                    repository.findAll() :
+                    repository.findById(1).get(0);
+        };
+    }
 
-                    /*"amount", " ",
-                    "electrum_amount", " ",
-                    "electrum_id", " ",
-                    "electrum_uri", " ",
-                    "electrum_address", " ",
-                    "electrum_expires_at"," ",
-                    "created_at", " ",
-                    "update_at", " "*/
-    );
+    public DataFetcher getAllInvoicesPaymentDataFetcher() {
+        return dataFetchingEnvironment -> {
+            List list = new ArrayList<Map<String, Object>>();
+            return repository == null ?
+                    repository.findAll() :
+                    repository.findById(1).get(0);
+        };
+    }
+}
+
+/*
+    public DataFetcher invoiceDataFetcher = environment -> {
+            String id = environment .getArgument("id");
+             return getRepository().findByInvoiceId(Invoices.class, Long.valueOf(id));
+        };
+}
+
 
     public DataFetcher getAllInvoicesDataFetcher() {
         return dataFetchingEnvironment -> {
@@ -103,7 +77,7 @@ public class GraphQLDataFetchers {
                     .stream()
                     .filter(invoices -> invoices.get("uuid").equals("e90c7a90-5796-11e9-8f48-3da631878411"))
                     .findFirst()
-                    .orElse(null);*/
+                    .orElse(null);
         };
 
     }
@@ -176,3 +150,4 @@ public class GraphQLDataFetchers {
         };
     }
 }
+           */

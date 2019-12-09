@@ -48,16 +48,20 @@ public class GraphQLProvider {
     private RuntimeWiring buildWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type(newTypeWiring("Query")
-                        .dataFetcher("findAllInvoices", graphQLDataFetchers.getAllInvoicesDataFetcher())
-                        .dataFetcher("invoicesById", graphQLDataFetchers.getInvoicesByIdDataFetcher())
-                        .dataFetcher("uuid", graphQLDataFetchers.getInvoicesByUuidDataFetcher())
-                        .dataFetcher("memo", graphQLDataFetchers.getInvoicesByMemoDataFetcher())
-                        .dataFetcher("payment_id", graphQLDataFetchers.getInvoicesPaymentsDataFetcher())
-                        .dataFetcher("email", graphQLDataFetchers.getInvoicesByEmailDataFetcher()))
-                .type(newTypeWiring("Invoices")
-                        .dataFetcher("email", graphQLDataFetchers.getInvoicesByEmailDataFetcher()))
-                .build();
+                        .dataFetcher("invoice", graphQLDataFetchers.getAllInvoicesDataFetcher())
+                        //.dataFetcher("invoice", graphQLDataFetchers.getInvoicesByIdDataFetcher())
+                        .dataFetcher("invoice_payment", graphQLDataFetchers.getAllInvoicesPaymentDataFetcher()))
+                /*
+                 .dataFetcher("invoicesById", graphQLDataFetchers.getInvoicesByIdDataFetcher())
+                 .dataFetcher("uuid", graphQLDataFetchers.getInvoicesByUuidDataFetcher())
+                 .dataFetcher("memo", graphQLDataFetchers.getInvoicesByMemoDataFetcher())
+                 .dataFetcher("payment_id", graphQLDataFetchers.getInvoicesPaymentsDataFetcher())
+                 .dataFetcher("email", graphQLDataFetchers.getInvoicesByEmailDataFetcher()))
 
+                .type(newTypeWiring("Invoices")
+                        .dataFetcher("id", graphQLDataFetchers.getInvoicesByIdDataFetcher()))
+                */
+                .build();
     }
 
     @Bean

@@ -3,17 +3,20 @@ schema {
 }
 
 type Query{
-    findAllInvoices : Invoice
-    invoiceById(id: ID): Invoice
-    findByUuid(uuid: String):Invoice
-    findByStatus(status: String):Invoice
-    Invoice_PaymentsByID(id:ID): Invoice
+    invoice(id: ID): Invoice
+    invoice_payment(id:ID):Invoice_Payments
 }
 
 enum Status {
     Open
     Paid
     Expired
+}
+enum Currency{
+    DASH
+    BTC
+    LTC
+    BCH
 }
 
 type Invoice {
@@ -32,7 +35,7 @@ type Invoice {
     seller_name : String
     amount : String
     currency : String
-    payment_id : Invoice_Payments
+    payment : Invoice_Payments
     cancel_url : String
     extra_data : String
     endpoint : String
@@ -45,14 +48,14 @@ type Invoice {
 }
 type Invoice_Payments {
     id : ID
-    invoice_id :String
+    invoice_id :Int
     uuid: String
-    currency :String
+    currency : String
     electrum_amount : Float
     electrum_id : String
     electrum_uri :String
     electrum_address : String
-    electrum_expires_at :String
+    electrum_expires_at : String
     created_at : String
     update_at :String
 }

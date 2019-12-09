@@ -1,15 +1,12 @@
 package de.lamp.cryptopanel.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Collection;
 
 @Entity
 @Table(name = "invoices")
-public class Invoices implements Serializable {
+public class Invoices {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
