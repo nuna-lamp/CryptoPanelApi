@@ -94,18 +94,4 @@ public class InvoicesController {
         return graphQL.execute(executionInput).toSpecification();
     }
 
-/*
-    @PostMapping(path = "/add") // Map ONLY POST Requests
-    public @ResponseBody
-    String addNewInvoices(@RequestParam String name,
-                          @RequestParam String email) {
-
-        Invoices n = new Invoices();
-        n.setLastName(name);
-        n.setEmail(email);
-        repository.save(n);
-        return "Saved";
-    }
-
- */
 }

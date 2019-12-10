@@ -30,30 +30,6 @@ public class CryptopanelApplication {
             }
             log.info("");
         };
-
-
-
-/*
-            // fetch an individual customer by ID
-
-            Invoices invoices = repository.findById(10L).get();
-            log.info("Invoice found with findOne(1L):");
-            log.info("--------------------------------");
-            log.info(invoices.toString());
-            log.info("");
-
-
-            // fetch customers by last name
-
-            log.info("Invoices found with findByLastNameStartsWithIgnoreCase('Bauer'):");
-            log.info("--------------------------------------------");
-            for (Invoices bauer : repository
-                    .findByLastNameStartsWithIgnoreCase("Bauer")) {
-                log.info(bauer.toString());
-            }
-            log.info("");
-
- */
     }
 
 

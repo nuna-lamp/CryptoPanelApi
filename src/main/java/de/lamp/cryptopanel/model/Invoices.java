@@ -1,7 +1,6 @@
 package de.lamp.cryptopanel.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity

@@ -48,19 +48,10 @@ public class GraphQLProvider {
     private RuntimeWiring buildWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type(newTypeWiring("Query")
-                        .dataFetcher("invoice", graphQLDataFetchers.getAllInvoicesDataFetcher())
-                        //.dataFetcher("invoice", graphQLDataFetchers.getInvoicesByIdDataFetcher())
-                        .dataFetcher("invoice_payment", graphQLDataFetchers.getAllInvoicesPaymentDataFetcher()))
-                /*
-                 .dataFetcher("invoicesById", graphQLDataFetchers.getInvoicesByIdDataFetcher())
-                 .dataFetcher("uuid", graphQLDataFetchers.getInvoicesByUuidDataFetcher())
-                 .dataFetcher("memo", graphQLDataFetchers.getInvoicesByMemoDataFetcher())
-                 .dataFetcher("payment_id", graphQLDataFetchers.getInvoicesPaymentsDataFetcher())
-                 .dataFetcher("email", graphQLDataFetchers.getInvoicesByEmailDataFetcher()))
-
+                        .dataFetcher("invoice", graphQLDataFetchers.getInvoiceIdsDataFetcher())
+                       .dataFetcher("invoice_payment", graphQLDataFetchers.getInvoicesPaymentIdDataFetcher()))
                 .type(newTypeWiring("Invoices")
-                        .dataFetcher("id", graphQLDataFetchers.getInvoicesByIdDataFetcher()))
-                */
+                        .dataFetcher("id", graphQLDataFetchers.getInvoiceIdsDataFetcher()))
                 .build();
     }
 
