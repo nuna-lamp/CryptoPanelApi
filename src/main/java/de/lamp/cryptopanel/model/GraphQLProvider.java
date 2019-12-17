@@ -49,9 +49,10 @@ public class GraphQLProvider {
         return RuntimeWiring.newRuntimeWiring()
                 .type(newTypeWiring("Query")
                         .dataFetcher("invoice", graphQLDataFetchers.getInvoiceIdsDataFetcher())
-                       .dataFetcher("invoice_payment", graphQLDataFetchers.getInvoicesPaymentIdDataFetcher()))
-                .type(newTypeWiring("Invoices")
-                        .dataFetcher("id", graphQLDataFetchers.getInvoiceIdsDataFetcher()))
+                        .dataFetcher("invoice_payment", graphQLDataFetchers.getInvoicesPaymentIdDataFetcher())
+                        .dataFetcher("invoices", graphQLDataFetchers.getInvoicesDataFetcher())
+                        .dataFetcher("invoiceByDate", graphQLDataFetchers.getAllBetweenDatesDataFetcher()))
+
                 .build();
     }
 

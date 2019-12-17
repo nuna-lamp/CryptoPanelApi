@@ -19,7 +19,7 @@ public class Invoices {
     private String return_url;
     private String callback_url;
     private Timestamp expires_at;
-    private Timestamp created_at;
+    private String created_at;
     private Timestamp update_at;
     private String seller_name;
     private double amount;
@@ -37,7 +37,7 @@ public class Invoices {
 
     public Invoices(int id, char uuid, String memo, String email, String first_name, String last_name,
                     String  status, String return_url, String callback_url, Timestamp expires_at,
-                    Timestamp created_at, Timestamp update_at, String seller_name, double amount,
+                    String created_at, Timestamp update_at, String seller_name, double amount,
                     String currency, Integer payment_id, String cancel_url, String extra_data, String endpoint,
                     int doi, String ip, Timestamp option_timestamp, String selected_currencies,
                     String endpoint_version, String note) {
@@ -148,11 +148,11 @@ public class Invoices {
         this.expires_at = expires_at;
     }
 
-    public Timestamp getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Timestamp created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 

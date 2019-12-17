@@ -5,6 +5,8 @@ schema {
 type Query{
     invoice(id: ID): Invoice
     invoice_payment(id:ID):Invoice_Payments
+    invoices: [Invoice]
+    invoiceByDate(fromDate: String, toDate: String):[Invoice]
 }
 
 enum Status {
@@ -26,7 +28,7 @@ type Invoice {
     email : String
     first_name : String
     lastName : String
-    status : String
+    status : Status
     return_url : String
     callback_url : String
     expires_at : String
@@ -41,7 +43,7 @@ type Invoice {
     endpoint : String
     doi : String
     ip : String
-    option_timestamp : String
+    option_timestamp: String
     selected_currencies : String
     endpoint_version : String
     note : String
