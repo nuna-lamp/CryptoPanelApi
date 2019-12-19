@@ -14,7 +14,7 @@ public class Invoices {
     private String memo;
     private String email;
     private String first_name;
-    private String lastName;
+    private String last_name;
     private String status;
     private String return_url;
     private String callback_url;
@@ -46,7 +46,7 @@ public class Invoices {
         this.memo = memo;
         this.email = email;
         this.first_name = first_name;
-        this.lastName = last_name;
+        this.last_name = last_name;
         this.status = status;
         this.return_url = return_url;
         this.callback_url = callback_url;
@@ -109,11 +109,11 @@ public class Invoices {
     }
 
     public String getLastName() {
-        return lastName;
+        return last_name;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.last_name = lastName;
     }
 
     public String getStatus() {
@@ -276,7 +276,7 @@ public class Invoices {
                 ", memo='" + memo + '\'' +
                 ", email='" + email + '\'' +
                 ", first_name='" + first_name + '\'' +
-                ", last_name='" + lastName + '\'' +
+                ", last_name='" + last_name + '\'' +
                 ", status='" + status + '\'' +
                 ", return_url='" + return_url + '\'' +
                 ", callback_url='" + callback_url + '\'' +

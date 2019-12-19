@@ -49,13 +49,41 @@ public class GraphQLDataFetchers {
         };
     }
 
-    public DataFetcher getAllBetweenDatesDataFetcher() {
+    public DataFetcher getAllBetweenDatesAndStatusDataFetcher() {
         return dataFetchingEnvironment -> {
             String from = dataFetchingEnvironment.getArgument("fromDate");
             String to = dataFetchingEnvironment.getArgument("toDate");
+            String status = dataFetchingEnvironment.getArgument("status");
 
-            return repository.getAllBetweenDates(from, to);
+            return repository.getAllBetweenDatesAndStatus(from, to, status);
         };
     }
+
+    public DataFetcher getPaymentDataFetcher() {
+        return dataFetchingEnvironment -> {
+            String payment = dataFetchingEnvironment.getArgument("payment_id");
+
+            return repository.findByPayment(payment);
+        };
+    }
+
+    public DataFetcher getByLastNameAndFirsNameDataFetcher() {
+        return dataFetchingEnvironment -> {
+            String last_name = dataFetchingEnvironment.getArgument("last_name");
+            String first_name = dataFetchingEnvironment.getArgument("first_name");
+
+            return repository.findByLastNameAndFirsName(last_name,first_name);
+        };
+    }
+
+    public DataFetcher getInvoiceByEmailDataFetcher() {
+        return dataFetchingEnvironment -> {
+            String email = dataFetchingEnvironment.getArgument("email");
+
+            return repository.findByEmail(email);
+        };
+    }
+
+
 }
 

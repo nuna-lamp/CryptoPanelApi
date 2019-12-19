@@ -51,7 +51,10 @@ public class GraphQLProvider {
                         .dataFetcher("invoice", graphQLDataFetchers.getInvoiceIdsDataFetcher())
                         .dataFetcher("invoice_payment", graphQLDataFetchers.getInvoicesPaymentIdDataFetcher())
                         .dataFetcher("invoices", graphQLDataFetchers.getInvoicesDataFetcher())
-                        .dataFetcher("invoiceByDate", graphQLDataFetchers.getAllBetweenDatesDataFetcher()))
+                        .dataFetcher("invoiceByDateAndStatus", graphQLDataFetchers.getAllBetweenDatesAndStatusDataFetcher())
+                        .dataFetcher("invoiceByPayment", graphQLDataFetchers.getPaymentDataFetcher())
+                        .dataFetcher("invoiceByName", graphQLDataFetchers.getByLastNameAndFirsNameDataFetcher())
+                        .dataFetcher("invoiceByEmail", graphQLDataFetchers.getInvoiceByEmailDataFetcher()))
 
                 .build();
     }
