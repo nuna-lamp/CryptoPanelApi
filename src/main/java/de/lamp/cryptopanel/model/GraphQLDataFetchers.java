@@ -54,8 +54,15 @@ public class GraphQLDataFetchers {
             String from = dataFetchingEnvironment.getArgument("fromDate");
             String to = dataFetchingEnvironment.getArgument("toDate");
             String status = dataFetchingEnvironment.getArgument("status");
+            String email = dataFetchingEnvironment.getArgument("email");
 
-            return repository.getAllBetweenDatesAndStatus(from, to, status);
+            return repository.getAllBetweenDatesAndStatus(from, to, status, email);
+        };
+    }
+
+    public DataFetcher getAllBetweenDatesAndArgumentsDataFetcher() {
+        return dataFetchingEnvironment -> {
+            return repository.getAllBetweenDatesAndArguments(dataFetchingEnvironment.getArguments());
         };
     }
 

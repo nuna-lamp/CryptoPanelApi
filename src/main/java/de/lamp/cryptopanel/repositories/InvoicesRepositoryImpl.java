@@ -6,7 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
@@ -16,36 +22,55 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
 
-    public List getAllBetweenDatesAndStatus(String from, String to, String status) {
+    @Override
+    public List getAllBetweenDatesAndStatus(
+            String from,
+            String to,
+            String status,
+            String email) {
 
-        if (null == status || status.equals("")) {
-            Query query = entityManager.createNativeQuery(
-                    "SELECT " +
-                            "   * " +
-                            "FROM " +
-                            "   `invoices`" +
-                            " WHERE " +
-                            "   created_at BETWEEN :from AND :to",
-                    Invoices.class);
-            query.setParameter("from", from);
-            query.setParameter("to", to);
-            return query.getResultList();
-        } else {
-            Query query = entityManager.createNativeQuery(
-                    "SELECT " +
-                            "   * " +
-                            "FROM " +
-                            "   `invoices`" +
-                            " WHERE " +
-                            "   created_at BETWEEN :from AND :to" +
-                            " AND " +
-                            "   status = :status",
-                    Invoices.class);
-            query.setParameter("from", from);
-            query.setParameter("to", to);
-            query.setParameter("status", status);
-            return query.getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Invoices> cq = cb.createQuery(Invoices.class);
+        Root<Invoices> invoices = cq.from(Invoices.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (!(null == status || status.equals(""))) {
+            predicates.add(cb.equal(invoices.get("status"),status));
         }
+        if (!(null == email || email.equals(""))) {
+            predicates.add(cb.equal(invoices.get("email"),email));
+        }
+
+       for(int i = 0; i< predicates.size(); i++)
+        {
+            cq.where(predicates.toArray(new Predicate[i]));
+        }
+
+        return entityManager.createQuery(cq).getResultList();
+    }
+
+    @Override
+    public List<Invoices> getAllBetweenDatesAndArguments(Map<String, Object> arguments) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Invoices> cq = cb.createQuery(Invoices.class);
+        Root<Invoices> invoices = cq.from(Invoices.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        for(Map.Entry<String, Object> entry : arguments.entrySet()){
+           if(!(null == entry) || entry.getValue().equals("")){
+                predicates.add(cb.equal(invoices.get(entry.getKey()),entry.getValue()));
+            }
+        }
+
+        for(int i = 0; i< predicates.size(); i++)
+        {
+            cq.where(predicates.toArray(new Predicate[i]));
+        }
+
+        return entityManager.createQuery(cq).getResultList();
     }
 
     @Override

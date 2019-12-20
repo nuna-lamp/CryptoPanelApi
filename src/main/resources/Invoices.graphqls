@@ -6,7 +6,8 @@ type Query{
     invoice(id: ID): Invoice
     invoice_payment(id:ID):Invoice_Payments
     invoices: [Invoice]
-    invoiceByDateAndStatus(fromDate: String, toDate: String, status: String):[Invoice]
+    invoiceByDateAndStatus(fromDate: String, toDate: String, status: String, email: String):[Invoice]
+    invoiceByDateAndArguments(fromDate: String, toDate: String, status: String, email: String):[Invoice]
     invoiceByName(last_name: String, first_name: String): [Invoice]
     invoiceByStatus(status: String):[Invoice]
     invoiceByEmail(email: String) :[Invoice]
