@@ -59,18 +59,21 @@ public class GraphQLDataFetchers {
             return repository.getAllBetweenDatesAndStatus(from, to, status, email);
         };
     }
+    public DataFetcher getAllBetweenDatesAndSumDataFetcher() {
+        return dataFetchingEnvironment -> {
+            String from = dataFetchingEnvironment.getArgument("fromDate");
+            String to = dataFetchingEnvironment.getArgument("toDate");
+            String status = dataFetchingEnvironment.getArgument("status");
+            String amount = dataFetchingEnvironment.getArgument("amount");
+           // Double sum = dataFetchingEnvironment.getArgument("summe");
+
+            return repository.getAllBetweenDatesAndSum(from, to, status, amount);
+        };
+    }
 
     public DataFetcher getAllBetweenDatesAndArgumentsDataFetcher() {
         return dataFetchingEnvironment -> {
             return repository.getAllBetweenDatesAndArguments(dataFetchingEnvironment.getArguments());
-        };
-    }
-
-    public DataFetcher getPaymentDataFetcher() {
-        return dataFetchingEnvironment -> {
-            String payment = dataFetchingEnvironment.getArgument("payment_id");
-
-            return repository.findByPayment(payment);
         };
     }
 
@@ -82,15 +85,6 @@ public class GraphQLDataFetchers {
             return repository.findByLastNameAndFirsName(last_name,first_name);
         };
     }
-
-    public DataFetcher getInvoiceByEmailDataFetcher() {
-        return dataFetchingEnvironment -> {
-            String email = dataFetchingEnvironment.getArgument("email");
-
-            return repository.findByEmail(email);
-        };
-    }
-
 
 }
 

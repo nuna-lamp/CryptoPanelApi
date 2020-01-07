@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -51,6 +52,38 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
     }
 
     @Override
+    public Double getAllBetweenDatesAndSum(
+        String from,
+        String to,
+        String status,
+        String amount) {
+
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Invoices> cq = cb.createQuery(Invoices.class);
+            CriteriaQuery<Double> test = cb.createQuery(Double.class);
+
+            Root<Invoices> invoices = cq.from(Invoices.class);
+
+            test.select(cb.sum(invoices.get("amount")));
+
+            TypedQuery<Double> typedQuery = entityManager.createQuery(test);
+            Double sum = typedQuery.getSingleResult();
+            return sum;
+
+
+
+          //  return entityManager.createQuery(test).getResultList();
+       /*
+        Query query = entityManager.createNativeQuery(
+                "SELECT sum(amount) FROM `invoices` WHERE `status` is not null ", Invoices.class);
+
+        query.setParameter(1, amount);
+        return query.getResultList();
+
+      */
+    }
+
+    @Override
     public List<Invoices> getAllBetweenDatesAndArguments(Map<String, Object> arguments) {
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -60,7 +93,10 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         List<Predicate> predicates = new ArrayList<>();
 
         for(Map.Entry<String, Object> entry : arguments.entrySet()){
-           if(!(null == entry) || entry.getValue().equals("")){
+            if(null != entry &&  entry.getKey().equals("fromDate")){
+                // predicates.add(cb.equal(invoices.get(entry.getKey()),entry.getValue()));
+            }else
+                if(!(null == entry) || entry.getValue().equals("")){
                 predicates.add(cb.equal(invoices.get(entry.getKey()),entry.getValue()));
             }
         }
@@ -83,21 +119,4 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         return query.getResultList();
     }
 
-    @Override
-    public List<Invoices> findByEmail(String email) {
-        Query query = entityManager.createNativeQuery(
-                "SELECT * FROM `invoices` WHERE email like :email", Invoices.class);
-
-        query.setParameter("email", email);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Invoices> findByPayment(String payment) {
-        Query query = entityManager.createNativeQuery(
-                "SELECT sum(amount) FROM `invoices` WHERE payment_id IS NOT NULL ", Invoices.class);
-
-        query.setParameter(1, payment);
-        return query.getResultList();
-    }
 }

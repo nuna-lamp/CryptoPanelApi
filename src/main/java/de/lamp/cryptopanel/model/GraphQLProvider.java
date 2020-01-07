@@ -49,13 +49,11 @@ public class GraphQLProvider {
         return RuntimeWiring.newRuntimeWiring()
                 .type(newTypeWiring("Query")
                         .dataFetcher("invoice", graphQLDataFetchers.getInvoiceIdsDataFetcher())
-                        .dataFetcher("invoice_payment", graphQLDataFetchers.getInvoicesPaymentIdDataFetcher())
                         .dataFetcher("invoices", graphQLDataFetchers.getInvoicesDataFetcher())
                         .dataFetcher("invoiceByDateAndStatus", graphQLDataFetchers.getAllBetweenDatesAndStatusDataFetcher())
+                        .dataFetcher("invoiceByDateAndSum", graphQLDataFetchers.getAllBetweenDatesAndSumDataFetcher())
                         .dataFetcher("invoiceByDateAndArguments", graphQLDataFetchers.getAllBetweenDatesAndArgumentsDataFetcher())
-                        .dataFetcher("invoiceByPayment", graphQLDataFetchers.getPaymentDataFetcher())
-                        .dataFetcher("invoiceByName", graphQLDataFetchers.getByLastNameAndFirsNameDataFetcher())
-                        .dataFetcher("invoiceByEmail", graphQLDataFetchers.getInvoiceByEmailDataFetcher()))
+                        .dataFetcher("invoiceByName", graphQLDataFetchers.getByLastNameAndFirsNameDataFetcher()))
 
                 .build();
     }
