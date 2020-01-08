@@ -58,29 +58,30 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         String status,
         String amount) {
 
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Invoices> cq = cb.createQuery(Invoices.class);
-            CriteriaQuery<Double> test = cb.createQuery(Double.class);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
 
-            Root<Invoices> invoices = cq.from(Invoices.class);
+            Root<Invoices> invoices = query.from(Invoices.class);
 
-            test.select(cb.sum(invoices.get("amount")));
+            query.select(criteriaBuilder.sum(invoices.get("amount")));
 
-            TypedQuery<Double> typedQuery = entityManager.createQuery(test);
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (!(null == status || status.equals(""))) {
+                predicates.add(criteriaBuilder.equal(invoices.get("status"),status));
+            }
+
+
+            for(int i = 0; i< predicates.size(); i++)
+            {
+                query.where(predicates.toArray(new Predicate[i]));
+            }
+
+
+            TypedQuery<Double> typedQuery = entityManager.createQuery(query);
             Double sum = typedQuery.getSingleResult();
             return sum;
 
-
-
-          //  return entityManager.createQuery(test).getResultList();
-       /*
-        Query query = entityManager.createNativeQuery(
-                "SELECT sum(amount) FROM `invoices` WHERE `status` is not null ", Invoices.class);
-
-        query.setParameter(1, amount);
-        return query.getResultList();
-
-      */
     }
 
     @Override
