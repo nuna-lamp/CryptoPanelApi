@@ -31,8 +31,6 @@ public class CryptopanelApplication {
             log.info("");
         };
     }
-
-
 }
 
 
