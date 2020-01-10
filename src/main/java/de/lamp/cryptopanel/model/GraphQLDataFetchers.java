@@ -65,7 +65,6 @@ public class GraphQLDataFetchers {
             String to = dataFetchingEnvironment.getArgument("toDate");
             String status = dataFetchingEnvironment.getArgument("status");
             String amount = dataFetchingEnvironment.getArgument("amount");
-           // Double sum = dataFetchingEnvironment.getArgument("summe");
 
             return repository.getAllBetweenDatesAndSum(from, to, status, amount);
         };

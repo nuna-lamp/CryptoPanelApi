@@ -6,9 +6,14 @@ type Query{
     invoice(id: ID): Invoice
     invoices: [Invoice]
     invoiceByDateAndStatus(fromDate: String, toDate: String, status: String, email: String):[Invoice]
-    invoiceByDateAndSum(fromDate: String, toDate: String, status: String, amount: String):[InvoiceList]
-    invoiceByDateAndArguments(fromDate: String, toDate: String, status: String, email: String):[Invoice]
+    invoiceByDateAndSum(fromDate: String, toDate: String, status: String, amount: String):Amount
+    invoiceByDateAndArguments(fromDate: String, toDate: String, status: String, email: String, last_name: String):[Invoice]
     invoiceByName(last_name: String, first_name: String): [Invoice]
+}
+
+type Amount{
+    amount : Float
+    info: String
 }
 
 enum Status {
@@ -25,7 +30,7 @@ enum Currency{
 }
 
 type InvoiceList{
-    sumAmount: String
+    sumAmount: Float
 }
 
 type Invoice {

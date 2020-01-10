@@ -1,5 +1,6 @@
 package de.lamp.cryptopanel.repositories;
 
+import de.lamp.cryptopanel.model.Amount;
 import de.lamp.cryptopanel.model.Invoices;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface InvoiceRepositoryCustom {
 
     List<Invoices> getAllBetweenDatesAndStatus(String fromDate, String toDate, String status, String email);
 
-    Double getAllBetweenDatesAndSum(String fromDate, String toDate, String status, String amount);
+    Amount getAllBetweenDatesAndSum(String fromDate, String toDate, String status, String amount);
 
     List<Invoices> getAllBetweenDatesAndArguments(Map<String, Object> arguments);
 
