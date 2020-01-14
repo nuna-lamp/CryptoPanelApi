@@ -34,6 +34,9 @@ public class Invoices_payments implements Serializable {
     // private Invoices invoices;
     private Set<Invoices> invoices = new HashSet<Invoices>();
 */
+    public Invoices_payments(){
+
+    }
 
     public Invoices_payments(int id, Integer invoice_id, char uuid, String currency, double electrum_amount,
                              String electrum_id, String electrum_uri, String electrum_address,

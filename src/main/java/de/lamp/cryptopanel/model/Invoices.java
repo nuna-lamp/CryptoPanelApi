@@ -41,11 +41,9 @@ public class Invoices implements Serializable {
     private String note;
 
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-            ,fetch = FetchType.EAGER
+            fetch = FetchType.EAGER
     )
-    @JoinColumn(name = "payment_id")
+    @JoinColumn(name = "invoice_id", foreignKey = @javax.persistence.ForeignKey(name="none",value = ConstraintMode.NO_CONSTRAINT))
     private List<Invoices_payments> invoices_payments = new ArrayList<>();
 
 

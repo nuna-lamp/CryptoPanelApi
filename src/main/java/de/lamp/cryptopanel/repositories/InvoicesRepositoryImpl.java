@@ -7,10 +7,7 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -33,9 +30,25 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
                              String amount) {
            String[] currency = {"DASH", "LTC", "BTC", "BCH"};
 
+
+       CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+       CriteriaQuery cq = criteriaBuilder.createTupleQuery();
+       Root<Invoices> root = cq.from(Invoices.class);
+       Join<Invoices, Invoices_payments> join = root.join("invoices_payments");
+
+       cq.multiselect(criteriaBuilder.<Double>sum(root.get("amount")),join.get("currency") );
+
+       cq.groupBy(join.get("currency"));
+
+       List<Tuple> tupleResult = entityManager.createQuery(cq).getResultList();
+
        Amount namount = new Amount();
        namount.amount = 1.2d;
-       namount.info = "test";
+       namount.info="";
+       for (Tuple t : tupleResult) {
+           namount.info+="\n" + t.get(1) + ":" +  t.get(0);
+       }
+
        return namount;
 
 
