@@ -50,6 +50,7 @@ public class GraphQLProvider {
                 .type(newTypeWiring("Query")
                         .dataFetcher("invoice", graphQLDataFetchers.getInvoiceIdsDataFetcher())
                         .dataFetcher("invoices", graphQLDataFetchers.getInvoicesDataFetcher())
+                       // .dataFetcher("invoiceByCoinAndSum", graphQLDataFetchers.getCoinAndSumDataFetcher())
                         .dataFetcher("invoiceByDateAndStatus", graphQLDataFetchers.getAllBetweenDatesAndStatusDataFetcher())
                         .dataFetcher("invoiceByDateAndSum", graphQLDataFetchers.getAllBetweenDatesAndSumDataFetcher())
                         .dataFetcher("invoiceByDateAndArguments", graphQLDataFetchers.getAllBetweenDatesAndArgumentsDataFetcher())

@@ -1,11 +1,14 @@
 package de.lamp.cryptopanel.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "invoices")
-public class Invoices {
+public class Invoices implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,6 +18,7 @@ public class Invoices {
     private String email;
     private String first_name;
     private String last_name;
+    @Column(name = "status")
     private String status;
     private String return_url;
     private String callback_url;
@@ -24,6 +28,7 @@ public class Invoices {
     private String seller_name;
     private double amount;
     private String currency;
+    @Column(name = "payment_id")
     private Integer payment_id;
     private String cancel_url;
     private String extra_data;
@@ -34,6 +39,22 @@ public class Invoices {
     private String selected_currencies;
     private String endpoint_version;
     private String note;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+            ,fetch = FetchType.EAGER
+    )
+    @JoinColumn(name = "payment_id")
+    private List<Invoices_payments> invoices_payments = new ArrayList<>();
+
+   /*
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Invoices_payments> invoices_payments;
+
+    protected Invoices() {
+    }
+    */
 
     public Invoices(int id, char uuid, String memo, String email, String first_name, String last_name,
                     String  status, String return_url, String callback_url, Timestamp expires_at,
@@ -68,8 +89,8 @@ public class Invoices {
         this.note = note;
     }
 
-    public Invoices() {
-
+    public int getId() {
+        return id;
     }
 
     public void setId(int id) {
@@ -108,12 +129,12 @@ public class Invoices {
         this.first_name = first_name;
     }
 
-    public String getLastName() {
+    public String getLast_name() {
         return last_name;
     }
 
-    public void setLastName(String lastName) {
-        this.last_name = lastName;
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
     }
 
     public String getStatus() {
@@ -266,6 +287,14 @@ public class Invoices {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public List<Invoices_payments> getInvoices_payments() {
+        return invoices_payments;
+    }
+
+    public void setInvoices_payments(List<Invoices_payments> invoices_payments) {
+        this.invoices_payments = invoices_payments;
     }
 
     @Override

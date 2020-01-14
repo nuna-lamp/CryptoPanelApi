@@ -48,6 +48,20 @@ public class GraphQLDataFetchers {
             return repository.findAll();
         };
     }
+    /*
+    public DataFetcher getCoinAndSumDataFetcher() {
+        return dataFetchingEnvironment -> {
+            String from = dataFetchingEnvironment.getArgument("fromDate");
+            String to = dataFetchingEnvironment.getArgument("toDate");
+            String status = dataFetchingEnvironment.getArgument("status");
+            String coin = dataFetchingEnvironment.getArgument("coin");
+            String amount = dataFetchingEnvironment.getArgument("amount");
+
+            return repository.getCoinAndSum(from, to, status, coin, amount);
+        };
+    }
+
+     */
 
     public DataFetcher getAllBetweenDatesAndStatusDataFetcher() {
         return dataFetchingEnvironment -> {

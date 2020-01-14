@@ -1,11 +1,16 @@
 package de.lamp.cryptopanel.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "invoice_payments")
-public class Invoices_payments {
+public class Invoices_payments implements Serializable {
 
     @Id
     @Column(name = "payment_id")
@@ -21,6 +26,14 @@ public class Invoices_payments {
     private Timestamp electrum_expires_at;
     private Timestamp created_at;
     private Timestamp update_at;
+
+    @ManyToOne(targetEntity = Invoices.class)
+    private Invoices invoices;
+/*
+    @OneToMany(targetEntity = Invoices_payments.class)
+    // private Invoices invoices;
+    private Set<Invoices> invoices = new HashSet<Invoices>();
+*/
 
     public Invoices_payments(int id, Integer invoice_id, char uuid, String currency, double electrum_amount,
                              String electrum_id, String electrum_uri, String electrum_address,
@@ -125,6 +138,14 @@ public class Invoices_payments {
 
     public void setUpdate_at(Timestamp update_at) {
         this.update_at = update_at;
+    }
+
+    public Invoices getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(Invoices invoices) {
+        this.invoices = invoices;
     }
 
     @Override
