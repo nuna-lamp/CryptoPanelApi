@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface InvoiceRepositoryCustom {
 
-   // Amount getCoinAndSum(String fromDate, String toDate, String status,String coin, String amount);
+    Amount getCoinAndSum(String fromDate, String toDate, String status,String coin, String amount);
 
     List<Invoices> getAllBetweenDatesAndStatus(String fromDate, String toDate, String status, String email);
 

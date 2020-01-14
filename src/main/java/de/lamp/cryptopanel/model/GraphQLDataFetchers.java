@@ -48,7 +48,7 @@ public class GraphQLDataFetchers {
             return repository.findAll();
         };
     }
-    /*
+
     public DataFetcher getCoinAndSumDataFetcher() {
         return dataFetchingEnvironment -> {
             String from = dataFetchingEnvironment.getArgument("fromDate");
@@ -61,7 +61,7 @@ public class GraphQLDataFetchers {
         };
     }
 
-     */
+
 
     public DataFetcher getAllBetweenDatesAndStatusDataFetcher() {
         return dataFetchingEnvironment -> {

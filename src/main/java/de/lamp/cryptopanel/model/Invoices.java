@@ -48,13 +48,10 @@ public class Invoices implements Serializable {
     @JoinColumn(name = "payment_id")
     private List<Invoices_payments> invoices_payments = new ArrayList<>();
 
-   /*
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Invoices_payments> invoices_payments;
 
     protected Invoices() {
     }
-    */
+
 
     public Invoices(int id, char uuid, String memo, String email, String first_name, String last_name,
                     String  status, String return_url, String callback_url, Timestamp expires_at,
