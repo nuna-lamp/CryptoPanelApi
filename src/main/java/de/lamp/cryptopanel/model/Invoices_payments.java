@@ -1,12 +1,8 @@
 package de.lamp.cryptopanel.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "invoice_payments")
@@ -29,11 +25,7 @@ public class Invoices_payments implements Serializable {
 
     @ManyToOne(targetEntity = Invoices.class)
     private Invoices invoices;
-/*
-    @OneToMany(targetEntity = Invoices_payments.class)
-    // private Invoices invoices;
-    private Set<Invoices> invoices = new HashSet<Invoices>();
-*/
+
     public Invoices_payments(){
 
     }

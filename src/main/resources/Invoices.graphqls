@@ -8,13 +8,21 @@ type Query{
 
     invoiceByDateAndStatus(fromDate: String, toDate: String, status: String, email: String):[Invoice]
     invoiceByDateAndSum(fromDate: String, toDate: String, status: String):Amount
-     invoiceByCoinAndSum(fromDate: String, toDate: String, status: String):Amount
+    invoiceByCoinAndSum(fromDate: String, toDate: String, status: String, info:String):CryptoCurrencies
     invoiceByDateAndArguments(fromDate: String, toDate: String, status: String, email: String, last_name: String):[Invoice]
     invoiceByName(last_name: String, first_name: String): [Invoice]
 }
 
 type Amount{
     amount : Float
+    info: String
+}
+
+type CryptoCurrencies{
+    btc: Float
+    ltc: Float
+    bch: Float
+    dash: Float
     info: String
 }
 

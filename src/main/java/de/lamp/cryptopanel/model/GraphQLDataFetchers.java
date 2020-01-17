@@ -49,19 +49,17 @@ public class GraphQLDataFetchers {
         };
     }
 
-    public DataFetcher getCoinAndSumDataFetcher() {
+    public DataFetcher getByCoinAndSumDataFetcher() {
         return dataFetchingEnvironment -> {
             String from = dataFetchingEnvironment.getArgument("fromDate");
             String to = dataFetchingEnvironment.getArgument("toDate");
             String status = dataFetchingEnvironment.getArgument("status");
             String coin = dataFetchingEnvironment.getArgument("coin");
-            String amount = dataFetchingEnvironment.getArgument("amount");
+            String info = dataFetchingEnvironment.getArgument("info");
 
-            return repository.getCoinAndSum(from, to, status, coin, amount);
+            return repository.getByCoinAndSum(from, to, status, coin, info);
         };
     }
-
-
 
     public DataFetcher getAllBetweenDatesAndStatusDataFetcher() {
         return dataFetchingEnvironment -> {
@@ -73,6 +71,7 @@ public class GraphQLDataFetchers {
             return repository.getAllBetweenDatesAndStatus(from, to, status, email);
         };
     }
+
     public DataFetcher getAllBetweenDatesAndSumDataFetcher() {
         return dataFetchingEnvironment -> {
             String from = dataFetchingEnvironment.getArgument("fromDate");
@@ -84,9 +83,9 @@ public class GraphQLDataFetchers {
         };
     }
 
-    public DataFetcher getAllBetweenDatesAndArgumentsDataFetcher() {
+    public DataFetcher getAllArgumentsDataFetcher() {
         return dataFetchingEnvironment -> {
-            return repository.getAllBetweenDatesAndArguments(dataFetchingEnvironment.getArguments());
+            return repository.getAllArguments(dataFetchingEnvironment.getArguments());
         };
     }
 

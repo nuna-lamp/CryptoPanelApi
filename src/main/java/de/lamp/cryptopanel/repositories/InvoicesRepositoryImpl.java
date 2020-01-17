@@ -1,16 +1,13 @@
 package de.lamp.cryptopanel.repositories;
 
 import de.lamp.cryptopanel.model.Amount;
+import de.lamp.cryptopanel.model.CryptoCurrencies;
 import de.lamp.cryptopanel.model.Invoices;
 import de.lamp.cryptopanel.model.Invoices_payments;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -23,36 +20,92 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
 
-   public Amount getCoinAndSum(String from,
-                             String to,
-                             String status,
-                             String coin,
-                             String amount) {
-           String[] currency = {"DASH", "LTC", "BTC", "BCH"};
+    public CryptoCurrencies getByCoinAndSum(String from,
+                                          String to,
+                                          String status,
+                                          String coin,
+                                          String infos) {
 
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> query = criteriaBuilder.createTupleQuery();
+        Root<Invoices> root = query.from(Invoices.class);
+        Join<Invoices, Invoices_payments> join = root.join("invoices_payments");
 
-       CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-       CriteriaQuery cq = criteriaBuilder.createTupleQuery();
-       Root<Invoices> root = cq.from(Invoices.class);
-       Join<Invoices, Invoices_payments> join = root.join("invoices_payments");
+        List<Predicate> predicates = new ArrayList<>();
 
-       cq.multiselect(criteriaBuilder.<Double>sum(root.get("amount")),join.get("currency") );
+        java.util.Date startDate = null;
+        java.util.Date endDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        String info = new String();
 
-       cq.groupBy(join.get("currency"));
+        try {
+            startDate = dateFormat.parse(from);
+        } catch (Exception e) {
+            cal.set(Calendar.YEAR, 1970);
+            cal.set(Calendar.MONTH, Calendar.JANUARY);
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            startDate = cal.getTime();
+            info = "Could not parse startDate, using 1970-01-01";
+        }
+        Predicate startDatePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get(
+                "created_at").as(java.sql.Date.class), startDate);
+        predicates.add(startDatePredicate);
 
-       List<Tuple> tupleResult = entityManager.createQuery(cq).getResultList();
+        try {
+            endDate = dateFormat.parse(to);
+        } catch (Exception e) {
+            LocalDateTime now = LocalDateTime.now();
+            cal.set(Calendar.YEAR, now.getYear());
+            cal.set(Calendar.MONTH, now.getMonthValue());
+            cal.set(Calendar.DAY_OF_MONTH, now.getDayOfMonth());
+            endDate = cal.getTime();
+            info = info + " Could not parse endDate, using " + endDate.toString();
+        }
 
-       Amount namount = new Amount();
-       namount.amount = 1.2d;
-       namount.info="";
-       for (Tuple t : tupleResult) {
-           namount.info+="\n" + t.get(1) + ":" +  t.get(0);
-       }
+        Predicate toDatePredicate = criteriaBuilder.lessThanOrEqualTo(root.get(
+                "created_at").as(java.sql.Date.class), endDate);
+        predicates.add(toDatePredicate);
 
-       return namount;
+        for (int i = 0; i < predicates.size(); i++) {
+            query.where(predicates.toArray(new Predicate[i]));
+        }
 
+        query.multiselect(
+                criteriaBuilder.<Double>sum(root.get("amount")),
+                join.get("currency")
+        );
+        query.groupBy(join.get("currency"));
 
-   }
+        List<Tuple> tupleResult = entityManager.createQuery(query).getResultList();
+
+        CryptoCurrencies result = new CryptoCurrencies();
+
+        for (Tuple t : tupleResult) {
+            switch (t.get(1).toString()) {
+                case "DASH":
+                    result.dash = (double) t.get(0);
+
+                    break;
+                case "BTC":
+                    result.btc = (double) t.get(0);
+
+                    break;
+                case "LTC":
+                    result.ltc = (double) t.get(0);
+
+                    break;
+                case "BCH":
+                    result.bch = (double) t.get(0);
+
+                    break;
+                default:
+            }
+        }
+        result.info = info;
+
+        return result;
+    }
 
     @Override
     public Amount getAllBetweenDatesAndSum(
@@ -121,12 +174,11 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         Amount namount = new Amount();
         namount.amount = sum;
         namount.info = info;
-
         return namount;
     }
 
     @Override
-    public List<Invoices> getAllBetweenDatesAndArguments(Map<String, Object> arguments) {
+    public List<Invoices> getAllArguments(Map<String, Object> arguments) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Invoices> query = criteriaBuilder.createQuery(Invoices.class);
@@ -166,7 +218,6 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
         List<Predicate> predicates = new ArrayList<>();
 
-
         if (!(null == status || status.equals(""))) {
             predicates.add(criteriaBuilder.equal(invoices.get("status"), status));
         }
@@ -180,7 +231,6 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
         return entityManager.createQuery(query).getResultList();
     }
-
 
     @Override
     public List<Invoices> findByLastNameAndFirsName(String last_name, String first_name) {
