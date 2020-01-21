@@ -4,18 +4,21 @@ schema {
 
 type Query{
     invoice(id: ID): Invoice
-    invoices: [Invoice]
+    invoices(last_name: String, first_name: String, fromDate: String, toDate: String, status: String, email: String):[Invoice]
+    turnoverByDate(fromDate: String, toDate: String, status: String):Amount
+    turnoverForCoins(fromDate: String, toDate: String, status: String, info:String):CryptoCurrencies
+    turnoverForEndpoints(email: String, last_name: String, first_name: String):[Endpoint]
 
-    invoiceByDateAndStatus(fromDate: String, toDate: String, status: String, email: String):[Invoice]
-    invoiceByDateAndSum(fromDate: String, toDate: String, status: String):Amount
-    invoiceByCoinAndSum(fromDate: String, toDate: String, status: String, info:String):CryptoCurrencies
-    invoiceByDateAndArguments(fromDate: String, toDate: String, status: String, email: String, last_name: String):[Invoice]
-    invoiceByName(last_name: String, first_name: String): [Invoice]
 }
 
 type Amount{
     amount : Float
     info: String
+}
+
+type Endpoint{
+    endpoint: String
+    amount : Float
 }
 
 type CryptoCurrencies{

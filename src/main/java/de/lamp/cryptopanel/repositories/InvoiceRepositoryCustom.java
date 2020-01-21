@@ -2,6 +2,7 @@ package de.lamp.cryptopanel.repositories;
 
 import de.lamp.cryptopanel.model.Amount;
 import de.lamp.cryptopanel.model.CryptoCurrencies;
+import de.lamp.cryptopanel.model.Endpoint;
 import de.lamp.cryptopanel.model.Invoices;
 
 import java.util.List;
@@ -9,14 +10,11 @@ import java.util.Map;
 
 public interface InvoiceRepositoryCustom {
 
-    CryptoCurrencies getByCoinAndSum(String fromDate, String toDate, String status, String coin, String info);
+    Amount getByDates(String fromDate, String toDate, String status, String amount);
 
-    List<Invoices> getAllBetweenDatesAndStatus(String fromDate, String toDate, String status, String email);
+    CryptoCurrencies getByCoins(String fromDate, String toDate, String status, String coin, String info);
 
-    Amount getAllBetweenDatesAndSum(String fromDate, String toDate, String status, String amount);
-
-    List<Invoices> getAllArguments(Map<String, Object> arguments);
-
-    List<Invoices> findByLastNameAndFirsName(String last_name, String first_name);
+    List<Endpoint> getByEndpoints(Map<String, Object> arguments);
 
 }
+
