@@ -13,7 +13,7 @@ public class Invoices implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private char uuid;
+    private String uuid;
     private String memo;
     private String email;
     private String first_name;
@@ -22,9 +22,9 @@ public class Invoices implements Serializable {
     private String status;
     private String return_url;
     private String callback_url;
-    private Timestamp expires_at;
+    private String expires_at;
     private String created_at;
-    private Timestamp update_at;
+    private String update_at;
     private String seller_name;
     private double amount;
     private String currency;
@@ -35,7 +35,7 @@ public class Invoices implements Serializable {
     private String endpoint;
     private int doi;
     private String ip;
-    private Timestamp option_timestamp;
+    private String option_timestamp;
     private String selected_currencies;
     private String endpoint_version;
     private String note;
@@ -46,15 +46,15 @@ public class Invoices implements Serializable {
     @JoinColumn(name = "id", referencedColumnName = "payment_id", foreignKey = @javax.persistence.ForeignKey(name="none",value = ConstraintMode.NO_CONSTRAINT))
     private List<Invoices_payments> invoices_payments = new ArrayList<>();
 
-    protected Invoices() {
+    public Invoices(){
     }
 
-    public Invoices(int id, char uuid, String memo, String email, String first_name, String last_name,
-                    String  status, String return_url, String callback_url, Timestamp expires_at,
-                    String created_at, Timestamp update_at, String seller_name, double amount,
-                    String currency, Integer payment_id, String cancel_url, String extra_data, String endpoint,
-                    int doi, String ip, Timestamp option_timestamp, String selected_currencies,
-                    String endpoint_version, String note) {
+    public Invoices(int id, String uuid, String memo, String email, String first_name,
+                    String last_name, String status, String return_url, String callback_url,
+                    String expires_at, String created_at, String update_at, String seller_name,
+                    double amount, String currency,int payment_id, String cancel_url, String extra_data,
+                    String endpoint,int doi, String ip, String option_timestamp, String selected_currencies,
+                    String endpoint_version,String note ) {
         this.id = id;
         this.uuid = uuid;
         this.memo = memo;
@@ -90,11 +90,11 @@ public class Invoices implements Serializable {
         this.id = id;
     }
 
-    public char getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(char uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -154,11 +154,11 @@ public class Invoices implements Serializable {
         this.callback_url = callback_url;
     }
 
-    public Timestamp getExpires_at() {
+    public String getExpires_at() {
         return expires_at;
     }
 
-    public void setExpires_at(Timestamp expires_at) {
+    public void setExpires_at(String expires_at) {
         this.expires_at = expires_at;
     }
 
@@ -170,11 +170,11 @@ public class Invoices implements Serializable {
         this.created_at = created_at;
     }
 
-    public Timestamp getUpdate_at() {
+    public String getUpdate_at() {
         return update_at;
     }
 
-    public void setUpdate_at(Timestamp update_at) {
+    public void setUpdate_at(String update_at) {
         this.update_at = update_at;
     }
 
@@ -250,11 +250,11 @@ public class Invoices implements Serializable {
         this.ip = ip;
     }
 
-    public Timestamp getOption_timestamp() {
+    public String getOption_timestamp() {
         return option_timestamp;
     }
 
-    public void setOption_timestamp(Timestamp option_timestamp) {
+    public void setOption_timestamp(String option_timestamp) {
         this.option_timestamp = option_timestamp;
     }
 
