@@ -33,6 +33,9 @@ public class InvoicesController {
         this.objectMapper = objectMapper;
     }
 
+    public InvoicesController() {
+    }
+
     public InvoicesController(InvoicesRepository invoicesRepository) {
     }
 
