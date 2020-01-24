@@ -81,12 +81,18 @@ class InvoicesRepositoryImplTest {
 
     @Test
     void getByEndpoints() {
+        Invoices invoices = new Invoices();
+        assertAll("Endpoint",
+                () -> assertEquals("donateForm", invoices.getEndpoint()),
+                () -> assertEquals("paymentForm", invoices.getEndpoint())
+        );
     }
 
 
   /*
     @Test
     List<Endpoint> getByEndpoints(Map<String, Object> arguments {
+
         //given
         Invoices invoices = new Invoices();
         invoices.setEmail("nuna@lamp-solutions.de");

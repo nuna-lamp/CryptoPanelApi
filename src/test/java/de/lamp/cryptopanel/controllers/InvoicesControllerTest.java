@@ -2,34 +2,29 @@ package de.lamp.cryptopanel.controllers;
 
 import de.lamp.cryptopanel.model.Invoices;
 import de.lamp.cryptopanel.repositories.InvoicesRepository;
-import de.lamp.cryptopanel.repositories.InvoicesRepositoryImpl;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
-import static org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.Conversions.oneOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InvoicesControllerTest {
 
-    @Mock
-    InvoicesRepository invoicesRepository;
-    @InjectMocks
-    InvoicesController invoicesController;
+    @Autowired
+    private  InvoicesRepository invoicesRepository;
+
+    @Autowired
+    private InvoicesController invoicesController;
    //InvoicesController invoicesController = new InvoicesRepositoryImpl();
 
-    @Mock
-   InvoicesController.ChangeHandler changeHandler;
-
+    private Invoices invoices;
  /*
     private InvoicesController invoicesControllerTest;
     private InvoicesRepository invoicesRepository;
@@ -59,6 +54,32 @@ public class InvoicesControllerTest {
     }
 
     @Test
+    public Object emailTesting(String email){
+
+            if (email.isEmpty() || email.equalsIgnoreCase(invoices.getEmail())){
+                throw new IllegalArgumentException("Email should be using example nuna@lamp-solutions.de");
+            }
+            return isNotNull();
+    }
+
+    @Test
+    public void datesTesting(){
+
+        Throwable exception = new IllegalArgumentException ();
+        invoices.setCreated_at("");
+        assertEquals("Date must be an SimpleDateFormat(yyyy-MM-dd)", exception.getMessage());
+    }
+
+     @Test
+     public void NamesAssertions() {
+          Invoices invoices = new Invoices();
+          assertAll("invoice name",
+              () -> assertEquals("Nuna", invoices.getFirst_name()),
+              () -> assertEquals("Bopp", invoices.getLast_name())
+          );
+      }
+
+
     public void graphqlGET() {
     }
 

@@ -43,18 +43,18 @@ public class Invoices implements Serializable {
     @OneToMany(
             fetch = FetchType.EAGER
     )
-    @JoinColumn(name = "id", referencedColumnName = "payment_id", foreignKey = @javax.persistence.ForeignKey(name="none",value = ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "id", referencedColumnName = "payment_id", foreignKey = @javax.persistence.ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
     private List<Invoices_payments> invoices_payments = new ArrayList<>();
 
-    public Invoices(){
+    public Invoices() {
     }
 
     public Invoices(int id, String uuid, String memo, String email, String first_name,
                     String last_name, String status, String return_url, String callback_url,
                     String expires_at, String created_at, String update_at, String seller_name,
-                    double amount, String currency,int payment_id, String cancel_url, String extra_data,
-                    String endpoint,int doi, String ip, String option_timestamp, String selected_currencies,
-                    String endpoint_version,String note ) {
+                    double amount, String currency, int payment_id, String cancel_url, String extra_data,
+                    String endpoint, int doi, String ip, String option_timestamp, String selected_currencies,
+                    String endpoint_version, String note) {
         this.id = id;
         this.uuid = uuid;
         this.memo = memo;
