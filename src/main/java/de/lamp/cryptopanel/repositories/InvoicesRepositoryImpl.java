@@ -1,6 +1,7 @@
 package de.lamp.cryptopanel.repositories;
 
 import de.lamp.cryptopanel.CryptopanelApplication;
+import de.lamp.cryptopanel.helper.RequestArgumentsHandler;
 import de.lamp.cryptopanel.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -183,7 +184,12 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         Root<Invoices> root = query.from(Invoices.class);
         Join<Invoices, Invoices_payments> join = root.join("invoices_payments");
 
-        List<Predicate> predicates = getPredicates(arguments, criteriaBuilder, root);
+        List<Predicate> predicates = (new RequestArgumentsHandler().buildPredicateListForFromArguments(
+                arguments,
+                criteriaBuilder,
+                root
+        ));
+
 
         for (int i = 0; i < predicates.size(); i++) {
             query.where(predicates.toArray(new Predicate[i]));
@@ -206,22 +212,6 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         }
 
         return results;
-    }
-
-    private List<Predicate> getPredicates(Map<String, Object> arguments, CriteriaBuilder criteriaBuilder, Root<Invoices> root) {
-        List<Predicate> predicates = new ArrayList<>();
-
-        for (Map.Entry<String, Object> entry : arguments.entrySet()) {
-
-            if (!(null == entry) || entry.equals("email")) {
-                predicates.add(criteriaBuilder.equal(root.get("email"), entry.getValue()));
-            } else if (!(null == entry) || entry.getValue().equals("last_name")) {
-                predicates.add(criteriaBuilder.equal(root.get("last_name"), entry.getValue()));
-            } else if (!(null == entry) || entry.getValue().equals("first_name")) {
-                predicates.add(criteriaBuilder.equal(root.get("first_name"), entry.getValue()));
-            }
-        }
-        return predicates;
     }
 
 }
