@@ -9,5 +9,5 @@ import java.util.List;
 public interface InvoicesRepository extends JpaRepository<Invoices, Long>, InvoiceRepositoryCustom{
     List<Invoices> findById(int id);
     List<Invoices> findAll();
-    EntityManager getEntityManager();
+  //  EntityManager getEntityManager();
 }
