@@ -12,12 +12,10 @@ import org.junit.Assert;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.persistence.Tuple;
+import javax.persistence.TupleElement;
 import javax.persistence.criteria.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.is;
 
@@ -174,28 +172,18 @@ class RequestArgumentsHandlerTest {
     @Test
     void getEndpointsTesting() {
 
-        HashMap<String, Object> arguments = new HashMap<>() {
-            {
+        Tuple tuple = new MockTuple();
+        List<Tuple> arguments = new ArrayList<>();
+        arguments.add(tuple);
 
-                put("endpoint", "test");
-                put("amount", "test");
-            }
-        };
-      /*
-            List<String > endpoints = new ArrayList<>();
-            endpoints.add(1, "paymentForm");
-            endpoints.add(2,"amount");
 
-        List<Tuple> arg = new ArrayList<Tuple>() {{
-
-        }};
-*/
         List<Endpoint> result = (new RequestArgumentsHandler()).getEndpointsTesting((List<Tuple>) arguments);
 
-
-        Assert.assertEquals(result.get(1), "donateForm");
-        Assert.assertEquals(result.size(), 2);
-        Assert.assertEquals(result.get(0), null);
+        Assert.assertEquals(
+                result.get(0).amount,
+                Double.parseDouble(tuple.get(0).toString()),
+                0.1
+        );
 
     }
 /*
@@ -251,4 +239,67 @@ class RequestArgumentsHandlerTest {
 */
 
     }
+
+    @SuppressWarnings("unchecked")
+    private static class MockTuple implements Tuple {
+
+        TupleElement<String> one = new StringTupleElement("oNe");
+        TupleElement<String> two = new StringTupleElement("tWo");
+
+        @Override
+        public <X> X get(TupleElement<X> tupleElement) {
+            return (X) get(tupleElement.getAlias());
+        }
+
+        @Override
+        public <X> X get(String alias, Class<X> type) {
+            return (X) get(alias);
+        }
+
+        @Override
+        public Object get(String alias) {
+            return alias.toLowerCase();
+        }
+
+        @Override
+        public <X> X get(int i, Class<X> type) {
+            return (X) String.valueOf(i);
+        }
+
+        @Override
+        public Object get(int i) {
+            return get(i, Object.class);
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[] { one.getAlias().toLowerCase(), two.getAlias().toLowerCase() };
+        }
+
+        @Override
+        public List<TupleElement<?>> getElements() {
+            return Arrays.asList(one, two);
+        }
+
+        private static class StringTupleElement implements TupleElement<String> {
+
+            private final String value;
+
+            private StringTupleElement(String value) {
+                this.value = value;
+            }
+
+            @Override
+            public Class<? extends String> getJavaType() {
+                return String.class;
+            }
+
+            @Override
+            public String getAlias() {
+                return value;
+            }
+        }
+    }
+
+
 }
