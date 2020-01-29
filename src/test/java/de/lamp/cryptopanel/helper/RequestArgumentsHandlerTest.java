@@ -1,5 +1,6 @@
 package de.lamp.cryptopanel.helper;
 
+import de.lamp.cryptopanel.model.ArgumentDateParseResult;
 import de.lamp.cryptopanel.model.Endpoint;
 import de.lamp.cryptopanel.model.Invoices;
 import de.lamp.cryptopanel.model.Invoices_payments;
@@ -27,6 +28,7 @@ class RequestArgumentsHandlerTest {
     private CriteriaQuery criteriaQueryMock;
     private Root<Invoices> invoiceRootMock;
     private Join<Invoices, Invoices_payments> joinMock;
+
 
     @BeforeEach
     public void setup() {
@@ -130,22 +132,31 @@ class RequestArgumentsHandlerTest {
 
     @Test
     void getStringInfosDateformate() {
-        HashMap<String, Object> arguments = new HashMap<>() {{
-            put("created_at", "2019-01-01");
-            put("update_at", "2019-12-31");
 
-        }};
+        List<Predicate> predicates = new ArrayList<>();
+        String from = new String("2018-01-01");
+        String to = new String("2019-12-31");
 
-        List<Predicate> result = (new RequestArgumentsHandler()).buildPredicateListForFromArguments(
-                arguments,
+        ArgumentDateParseResult result = (new RequestArgumentsHandler()).getStringInfosDateformate(
+                from,
+                to,
                 criteriaBuilderMock,
                 invoiceRootMock,
-                joinMock);
+                predicates);
 
-        Assert.assertEquals(result.size(), 2);
-        Assert.assertEquals(result.get(0), null);
-        Assert.assertFalse("Could not parse startDate, using 1970-01-01", false);
+        Assert.assertEquals(result.success, true);
 
+        from = new String("test1234");
+        to = new String("2019-12-31");
+
+        ArgumentDateParseResult result2 = (new RequestArgumentsHandler()).getStringInfosDateformate(
+                from,
+                to,
+                criteriaBuilderMock,
+                invoiceRootMock,
+                predicates);
+
+        Assert.assertEquals(result2.success, false);
     }
 
     @Test
@@ -176,7 +187,6 @@ class RequestArgumentsHandlerTest {
         List<Tuple> arguments = new ArrayList<>();
         arguments.add(tuple);
 
-
         List<Endpoint> result = (new RequestArgumentsHandler()).getEndpointsTesting((List<Tuple>) arguments);
 
         Assert.assertEquals(
@@ -186,27 +196,6 @@ class RequestArgumentsHandlerTest {
         );
 
     }
-/*
-    @Test
-    void getEndpointsTesting() {
-        HashMap<String, Object> arguments = new HashMap<>() {{
-
-            HashMap endpoint = new HashMap();
-            endpoint.put(1, "donateForm");
-            endpoint.put(2, "paymentForm");
-
-        }};
-
-        List<Predicate> result = (new RequestArgumentsHandler()).buildPredicateListForFromArguments(
-                arguments,
-                criteriaBuilderMock,
-                invoiceRootMock,
-                joinMock);
-
-       // Assert.assertEquals("donateForm", "paymentForm");
-        Assert.assertEquals("donateForm", "donateForm");
-    }
- */
 
     @Test
     void buildPradicateSize() {

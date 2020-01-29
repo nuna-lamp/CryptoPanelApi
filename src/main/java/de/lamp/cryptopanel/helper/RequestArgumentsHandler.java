@@ -1,10 +1,7 @@
 package de.lamp.cryptopanel.helper;
 
 
-import de.lamp.cryptopanel.model.CryptoCurrencies;
-import de.lamp.cryptopanel.model.Endpoint;
-import de.lamp.cryptopanel.model.Invoices;
-import de.lamp.cryptopanel.model.Invoices_payments;
+import de.lamp.cryptopanel.model.*;
 
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
@@ -14,7 +11,10 @@ import java.util.*;
 
 public class RequestArgumentsHandler {
 
-    public List<Predicate> buildPredicateListForFromArguments(Map<String, Object> arguments, CriteriaBuilder criteriaBuilder, Root<Invoices> root, Join<Invoices, Invoices_payments> joinMock){
+    public List<Predicate> buildPredicateListForFromArguments(Map<String, Object> arguments,
+                                                              CriteriaBuilder criteriaBuilder,
+                                                              Root<Invoices> root,
+                                                              Join<Invoices, Invoices_payments> joinMock){
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -37,23 +37,30 @@ public class RequestArgumentsHandler {
         }
     }
 
-    public String getStringInfosDateformate(String from, String to, CriteriaBuilder criteriaBuilder, Root<Invoices> invoices, List<Predicate> predicates) {
+    public ArgumentDateParseResult getStringInfosDateformate(String from,
+                                                             String to,
+                                                             CriteriaBuilder criteriaBuilder,
+                                                             Root<Invoices> invoices,
+                                                             List<Predicate> predicates) {
+
+        ArgumentDateParseResult result = new ArgumentDateParseResult();
+        result.success = true;
 
         Date startDate = null;
         Date endDate = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
-        String info = new String();
 
         try {
             startDate = dateFormat.parse(from);
-            info = "Showing invoices from: " + startDate.toString();
+            result.info = "Showing invoices from: " + startDate.toString();
         } catch (Exception e) {
             cal.set(Calendar.YEAR, 1970);
             cal.set(Calendar.MONTH, Calendar.JANUARY);
             cal.set(Calendar.DAY_OF_MONTH, 1);
             startDate = cal.getTime();
-            info = "Could not parse startDate, using 1970-01-01";
+            result.info = "Could not parse startDate, using 1970-01-01";
+            result.success = false;
         }
 
         try {
@@ -65,7 +72,8 @@ public class RequestArgumentsHandler {
             cal.set(Calendar.MONTH, now.getMonthValue());
             cal.set(Calendar.DAY_OF_MONTH, now.getDayOfMonth());
             endDate = cal.getTime();
-            info = info + " Could not parse endDate, using " + endDate.toString();
+            result.info = result.info + " Could not parse endDate, using " + endDate.toString();
+            result.success = false;
         }
 
         Predicate startDatePredicate = criteriaBuilder.greaterThanOrEqualTo(invoices.get(
@@ -76,7 +84,8 @@ public class RequestArgumentsHandler {
                 criteriaBuilder.lessThanOrEqualTo(invoices.get(
                         "created_at").as(java.sql.Date.class), endDate)
         );
-        return info;
+
+        return result;
     }
 
     public static CryptoCurrencies getCoinCurrencies(String info, List<Tuple> tupleResult) {

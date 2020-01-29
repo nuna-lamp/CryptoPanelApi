@@ -18,7 +18,7 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
 
-     @Override
+    @Override
     public Amount getByDates(
             String from,
             String to,
@@ -31,13 +31,13 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        String info = (new RequestArgumentsHandler()).getStringInfosDateformate(from, to, criteriaBuilder, invoices, predicates);
+        ArgumentDateParseResult info = (new RequestArgumentsHandler()).getStringInfosDateformate(from, to, criteriaBuilder, invoices, predicates);
 
-         query.select(criteriaBuilder.sum(invoices.get("amount")));
+        query.select(criteriaBuilder.sum(invoices.get("amount")));
 
-         RequestArgumentsHandler.getStatusTesting(status, criteriaBuilder, invoices, predicates);
+        RequestArgumentsHandler.getStatusTesting(status, criteriaBuilder, invoices, predicates);
 
-         for (int i = 0; i < predicates.size(); i++) {
+        for (int i = 0; i < predicates.size(); i++) {
             query.where(predicates.toArray(new Predicate[i]));
         }
 
@@ -46,15 +46,15 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
         Amount namount = new Amount();
         namount.amount = sum;
-        namount.info = info;
+        namount.info = info.info;
         return namount;
     }
 
     public CryptoCurrencies getByCoins(String from,
-                                            String to,
-                                            String status,
-                                            String coin,
-                                            String infos) {
+                                       String to,
+                                       String status,
+                                       String coin,
+                                       String infos) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = criteriaBuilder.createTupleQuery();
@@ -63,7 +63,7 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
         List<Predicate> predicates = new ArrayList<>();
 
-       // String info = (new RequestArgumentsHandler()).getStringInfosDateformate(from, to, criteriaBuilder, invoices, predicates);
+        // String info = (new RequestArgumentsHandler()).getStringInfosDateformate(from, to, criteriaBuilder, invoices, predicates);
 
         java.util.Date startDate = null;
         java.util.Date endDate = null;
