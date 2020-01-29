@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.junit.Assert;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 
 import java.util.ArrayList;
@@ -97,17 +98,17 @@ class RequestArgumentsHandlerTest {
     }
 
     @Test
-    void getStatusTesting(){
+    void getStatusTesting() {
         HashMap<String, Object> arguments = new HashMap<>() {{
             Map<String, String> map = new HashMap<>();
-            map.put("p1","paid");
-            map.put("p2","open");
-            map.put("p3","expired");
+            map.put("p1", "paid");
+            map.put("p2", "open");
+            map.put("p3", "expired");
 
             Map<String, String> expected = new HashMap<>();
-            expected.put("p3","expired");
-            expected.put("p1","paid");
-            expected.put("p2","open");
+            expected.put("p3", "expired");
+            expected.put("p1", "paid");
+            expected.put("p2", "open");
 
             //1. Test equal, ignore order
             Assert.assertThat(map, is(expected));
@@ -172,6 +173,34 @@ class RequestArgumentsHandlerTest {
 
     @Test
     void getEndpointsTesting() {
+
+        HashMap<String, Object> arguments = new HashMap<>() {
+            {
+
+                put("endpoint", "test");
+                put("amount", "test");
+            }
+        };
+      /*
+            List<String > endpoints = new ArrayList<>();
+            endpoints.add(1, "paymentForm");
+            endpoints.add(2,"amount");
+
+        List<Tuple> arg = new ArrayList<Tuple>() {{
+
+        }};
+*/
+        List<Endpoint> result = (new RequestArgumentsHandler()).getEndpointsTesting((List<Tuple>) arguments);
+
+
+        Assert.assertEquals(result.get(1), "donateForm");
+        Assert.assertEquals(result.size(), 2);
+        Assert.assertEquals(result.get(0), null);
+
+    }
+/*
+    @Test
+    void getEndpointsTesting() {
         HashMap<String, Object> arguments = new HashMap<>() {{
 
             HashMap endpoint = new HashMap();
@@ -189,20 +218,21 @@ class RequestArgumentsHandlerTest {
        // Assert.assertEquals("donateForm", "paymentForm");
         Assert.assertEquals("donateForm", "donateForm");
     }
+ */
 
     @Test
     void buildPradicateSize() {
 
         HashMap<String, Object> arguments = new HashMap<>() {{
             Map<String, String> map = new HashMap<>();
-            map.put("p1","paid");
-            map.put("p2","open");
-            map.put("p3","expired");
+            map.put("p1", "paid");
+            map.put("p2", "open");
+            map.put("p3", "expired");
 
             Map<String, String> expected = new HashMap<>();
-            expected.put("p3","expired");
-            expected.put("p1","paid");
-            expected.put("p2","open");
+            expected.put("p3", "expired");
+            expected.put("p1", "paid");
+            expected.put("p2", "open");
 
             Assert.assertThat(map.size(), is(4));
 
