@@ -145,18 +145,20 @@ class RequestArgumentsHandlerTest {
                 predicates);
 
         Assert.assertEquals(result.success, true);
+        Assert.assertEquals(result.success, true);
+
 
         from = new String("test1234");
         to = new String("2019-12-31");
 
-        ArgumentDateParseResult result2 = (new RequestArgumentsHandler()).getStringInfosDateformate(
+        result = (new RequestArgumentsHandler()).getStringInfosDateformate(
                 from,
                 to,
                 criteriaBuilderMock,
                 invoiceRootMock,
                 predicates);
 
-        Assert.assertEquals(result2.success, false);
+        Assert.assertEquals(result.success, false);
     }
 
     @Test
