@@ -37,6 +37,40 @@ public class RequestArgumentsHandler {
         }
     }
 
+    /**
+     *
+     * @param dateString
+     * @param defaultYear
+     * @param defaultMonth
+     * @param defaultDay
+     * @param pattern
+     * @return
+     */
+    public Date parseDate(
+            String dateString,
+            int defaultYear,
+            int defaultMonth,
+            int defaultDay,
+            String pattern,
+            ArgumentDateParseResult info){
+
+        Date date = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        Calendar cal = Calendar.getInstance();
+
+        try {
+            date = dateFormat.parse(dateString);
+        } catch (Exception e) {
+            cal.set(Calendar.YEAR, defaultYear);
+            cal.set(Calendar.MONTH, defaultMonth);
+            cal.set(Calendar.DAY_OF_MONTH, defaultDay);
+            date = cal.getTime();
+            info.info += "Could not parse "+dateString+", using " + date.toString();
+            info.success = false;
+        }
+        return date;
+    }
+
     public ArgumentDateParseResult getStringInfosDateformate(String from,
                                                              String to,
                                                              CriteriaBuilder criteriaBuilder,
@@ -87,6 +121,7 @@ public class RequestArgumentsHandler {
 
         return result;
     }
+
 
     public static CryptoCurrencies getCoinCurrencies(String info, List<Tuple> tupleResult) {
 

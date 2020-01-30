@@ -18,6 +18,8 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
 
+    private static String defaultDateFormat =  "yyyy-MM-dd";
+
     @Override
     public Amount getByDates(
             String from,
@@ -30,8 +32,25 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         Root<Invoices> invoices = query.from(Invoices.class);
 
         List<Predicate> predicates = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        ArgumentDateParseResult info = new ArgumentDateParseResult();
 
-        ArgumentDateParseResult info = (new RequestArgumentsHandler()).getStringInfosDateformate(from, to, criteriaBuilder, invoices, predicates);
+        Date fromDate = (new RequestArgumentsHandler()).parseDate(
+                from,1970,
+                Calendar.JANUARY,
+                1,
+                defaultDateFormat,
+                info);
+
+        Date toDate = (new RequestArgumentsHandler()).parseDate(
+                to,
+                now.getYear(),
+                now.getMonthValue(),
+                now.getDayOfMonth(),
+                defaultDateFormat,
+                info);
+
+        buildDateCriteria(criteriaBuilder, invoices, predicates,fromDate,toDate);
 
         query.select(criteriaBuilder.sum(invoices.get("amount")));
 
@@ -48,6 +67,21 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         namount.amount = sum;
         namount.info = info.info;
         return namount;
+    }
+
+    private void buildDateCriteria( CriteriaBuilder criteriaBuilder,
+                                    Root<Invoices> invoices,
+                                    List<Predicate> predicates,
+                                    Date startDate,
+                                    Date endDate){
+        Predicate startDatePredicate = criteriaBuilder.greaterThanOrEqualTo(invoices.get(
+                "created_at").as(java.sql.Date.class), startDate);
+        predicates.add(startDatePredicate);
+
+        predicates.add(
+                criteriaBuilder.lessThanOrEqualTo(invoices.get(
+                        "created_at").as(java.sql.Date.class), endDate)
+        );
     }
 
     public CryptoCurrencies getByCoins(String from,
