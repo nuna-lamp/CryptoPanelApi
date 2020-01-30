@@ -135,8 +135,9 @@ class RequestArgumentsHandlerTest {
 
         List<Predicate> predicates = new ArrayList<>();
         String from = new String("2018-01-01");
+        String to = new String("2019-12-31");
 
-        ArgumentDateParseResult result = (new RequestArgumentsHandler()).parseDate(
+        ArgumentDateParseResult result = (new RequestArgumentsHandler()).getStringInfosDateformate(
                 from,
                 to,
                 criteriaBuilderMock,
