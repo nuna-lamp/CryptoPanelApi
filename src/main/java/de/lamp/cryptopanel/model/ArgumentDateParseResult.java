@@ -8,4 +8,9 @@ public class ArgumentDateParseResult {
         this.info = "";
         this.success=true;
     }
+
+    public ArgumentDateParseResult(String info, Boolean success) {
+        this.info = info;
+        this.success=success;
+    }
 }

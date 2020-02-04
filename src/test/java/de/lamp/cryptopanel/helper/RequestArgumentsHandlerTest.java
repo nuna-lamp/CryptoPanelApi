@@ -1,9 +1,8 @@
 package de.lamp.cryptopanel.helper;
 
-import de.lamp.cryptopanel.model.ArgumentDateParseResult;
-import de.lamp.cryptopanel.model.Endpoint;
-import de.lamp.cryptopanel.model.Invoices;
-import de.lamp.cryptopanel.model.Invoices_payments;
+import de.lamp.cryptopanel.model.*;
+import de.lamp.cryptopanel.repositories.InvoicesRepositoryImpl;
+import org.checkerframework.checker.units.qual.A;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,12 @@ import javax.persistence.Tuple;
 import javax.persistence.TupleElement;
 import javax.persistence.criteria.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.matchesPattern;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -131,57 +133,82 @@ class RequestArgumentsHandlerTest {
     }
 
     @Test
-    void getStringInfosDateformate() {
+    void parseDate() {
+        String dateString = new String("2018-05-01");
+        ArgumentDateParseResult info = new ArgumentDateParseResult();
+        RequestArgumentsHandler handler = new RequestArgumentsHandler();
 
-        List<Predicate> predicates = new ArrayList<>();
-        String from = new String("2018-01-01");
-        String to = new String("2019-12-31");
+        Date testDate = handler.parseDate(
+                dateString,
+                1970,
+                Calendar.JANUARY,
+                1,
+                Invoices.defaultDateFormat,
+                info
+                );
+        Assert.assertEquals(info.success, true);
 
-        ArgumentDateParseResult result = (new RequestArgumentsHandler()).getStringInfosDateformate(
-                from,
-                to,
-                criteriaBuilderMock,
-                invoiceRootMock,
-                predicates);
+        LocalDate localDate =
+                testDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        Assert.assertEquals(result.success, true);
-        Assert.assertEquals(result.success, true);
+        Assert.assertEquals(2018,localDate.getYear());
+        Assert.assertEquals(5, localDate.getMonthValue());
 
+        dateString="asdasdsad";
+        testDate = handler.parseDate(
+                dateString,
+                1970,
+                Calendar.JANUARY,
+                1,
+                Invoices.defaultDateFormat,
+                info
+        );
 
-        from = new String("test1234");
-        to = new String("2019-12-31");
+        localDate =
+                testDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        result = (new RequestArgumentsHandler()).getStringInfosDateformate(
-                from,
-                to,
-                criteriaBuilderMock,
-                invoiceRootMock,
-                predicates);
+        Assert.assertEquals(info.success, false);
+        Assert.assertNotEquals(info.info,"Could not parse Date");
+        Assert.assertEquals(1970, localDate.getYear());
+        Assert.assertEquals(1,localDate.getMonthValue());
 
-        Assert.assertEquals(result.success, false);
+        dateString="1960-01-01";
+        testDate = handler.parseDate(
+                dateString,
+                1970,
+                Calendar.JANUARY,
+                1,
+                Invoices.defaultDateFormat,
+                info
+        );
+
+        localDate =
+                testDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        Assert.assertEquals(1960, localDate.getYear());
+        Assert.assertEquals(1, localDate.getMonthValue());
+        Assert.assertFalse("Date less then",false);
+
+        dateString="2020-13-31";
+        testDate = handler.parseDate(
+                dateString,
+                1970,
+                Calendar.JANUARY,
+                1,
+                Invoices.defaultDateFormat,
+                info
+        );
+
+        localDate =
+                testDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Assert.assertEquals(info.success, false);
+
+        Assert.assertEquals(2020, localDate.getYear());
+        Assert.assertEquals(12, localDate.getMonthValue());
+       // Assert.assertFalse("Date greater then ",false);
+        Assert.assertThat(Invoices.defaultDateFormat, matchesPattern("\\d{4}-\\d{2}-\\d{2}"));
+
     }
-
-    @Test
-    void getCoinCurrencies() {
-        HashMap<String, Object> arguments = new HashMap<>() {{
-            HashMap coins = new HashMap();
-            coins.put(1, "DASH");
-            coins.put(2, "BTC");
-            coins.put(3, "LTC");
-            coins.put(4, "BCH");
-
-        }};
-
-        List<Predicate> result = (new RequestArgumentsHandler()).buildPredicateListForFromArguments(
-                arguments,
-                criteriaBuilderMock,
-                invoiceRootMock,
-                joinMock);
-
-        Assert.assertNotNull("Not Null", arguments);
-
-    }
-
     @Test
     void getEndpointsTesting() {
 
@@ -200,34 +227,43 @@ class RequestArgumentsHandlerTest {
     }
 
     @Test
-    void buildPradicateSize() {
+    void getCryptoCurrenciesTesting() {
 
-        HashMap<String, Object> arguments = new HashMap<>() {{
-            Map<String, String> map = new HashMap<>();
-            map.put("p1", "paid");
-            map.put("p2", "open");
-            map.put("p3", "expired");
+        Tuple tuple = new MockTupleCoins("dash",3.14d);
+        Tuple tuple2 = new MockTupleCoins("ltc",7.14d);
+        Tuple tuple3 = new MockTupleCoins("bch",7.14d);
 
-            Map<String, String> expected = new HashMap<>();
-            expected.put("p3", "expired");
-            expected.put("p1", "paid");
-            expected.put("p2", "open");
 
-            Assert.assertThat(map.size(), is(4));
+        List<Tuple> arguments = new ArrayList<>();
+        arguments.add(tuple);
+        arguments.add(tuple2);
+        arguments.add(tuple3);
 
-        }};
 
-        List<Predicate> result = (new RequestArgumentsHandler()).buildPredicateListForFromArguments(
-                arguments,
-                criteriaBuilderMock,
-                invoiceRootMock,
-                joinMock);
-/*
-        Object[] array = Ist.toArray();
-        Assert.assertTrue("Arrays not the same length", array.length == strs.length);
-        for (int i = 0; i < array.length; i++)
-           Assert.assertEquals(strs[i], (String) array[i]);
-*/
+        CryptoCurrencies result = (new RequestArgumentsHandler()).getCryptoCurrenciesTesting((List<Tuple>) arguments);
+
+        Assert.assertEquals(
+                result.dash,
+                Double.parseDouble(tuple.get(0).toString()),
+                0.00001
+        );
+
+
+        Assert.assertEquals(
+                result.dash,
+                3.14d,
+                0.00001
+        );
+        Assert.assertEquals(
+                result.ltc,
+                7.14d,
+                0.00001
+        );
+        Assert.assertEquals(
+                result.bch,
+                7.14d,
+                0.00001
+        );
 
     }
 
@@ -249,6 +285,7 @@ class RequestArgumentsHandlerTest {
 
         @Override
         public Object get(String alias) {
+
             return alias.toLowerCase();
         }
 
@@ -264,11 +301,15 @@ class RequestArgumentsHandlerTest {
 
         @Override
         public Object[] toArray() {
-            return new Object[] { one.getAlias().toLowerCase(), two.getAlias().toLowerCase() };
+            return new Object[] {
+                    one.getAlias().toLowerCase(),
+                    two.getAlias().toLowerCase(),
+                    };
         }
 
         @Override
         public List<TupleElement<?>> getElements() {
+
             return Arrays.asList(one, two);
         }
 
@@ -282,6 +323,80 @@ class RequestArgumentsHandlerTest {
 
             @Override
             public Class<? extends String> getJavaType() {
+
+                return String.class;
+            }
+
+            @Override
+            public String getAlias() {
+
+                return value;
+            }
+        }
+    }
+
+    public static class MockTupleCoins implements Tuple {
+
+        TupleElement<String> amount = new StringTupleElement("3.14");
+        TupleElement<String> coin;
+
+        MockTupleCoins(String coin, Double amount){
+            this.coin = new StringTupleElement(coin);
+            this.amount = new StringTupleElement(amount.toString());
+        }
+
+        @Override
+        public <X> X get(TupleElement<X> tupleElement) {
+            return (X) get(tupleElement.getAlias());
+        }
+
+        @Override
+        public <X> X get(String alias, Class<X> type) {
+            return (X) get(alias);
+        }
+
+        @Override
+        public Object get(String alias) {
+            return alias.toLowerCase();
+        }
+
+        @Override
+        public <X> X get(int i, Class<X> type) {
+            if(i==0) {
+                return (X) amount.getAlias();
+            }
+            if(i==1) {
+                return (X) coin.getAlias().toUpperCase();
+            }
+            return (X) String.valueOf(i);
+        }
+
+        @Override
+        public Object get(int i) {
+            return get(i, Object.class);
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[]{
+
+            };
+        }
+
+        @Override
+        public List<TupleElement<?>> getElements() {
+            return Arrays.asList();
+        }
+
+        public class StringTupleElement implements TupleElement<String> {
+            private final String value;
+
+            public StringTupleElement(String value) {
+                this.value = value;
+            }
+
+            @Override
+            public Class<? extends String> getJavaType() {
                 return String.class;
             }
 
@@ -290,7 +405,6 @@ class RequestArgumentsHandlerTest {
                 return value;
             }
         }
+
     }
-
-
 }

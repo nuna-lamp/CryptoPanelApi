@@ -290,6 +290,8 @@ public class Invoices implements Serializable {
         this.invoices_payments = invoices_payments;
     }
 
+    public static String defaultDateFormat =  "yyyy-MM-dd";
+
     @Override
     public String toString() {
         return "Invoices{" +

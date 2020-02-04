@@ -18,7 +18,6 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
     @PersistenceContext
     EntityManager entityManager;
 
-    private static String defaultDateFormat =  "yyyy-MM-dd";
 
     @Override
     public Amount getByDates(
@@ -36,10 +35,11 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         ArgumentDateParseResult info = new ArgumentDateParseResult();
 
         Date fromDate = (new RequestArgumentsHandler()).parseDate(
-                from,1970,
+                from,
+                1970,
                 Calendar.JANUARY,
                 1,
-                defaultDateFormat,
+                Invoices.defaultDateFormat,
                 info);
 
         Date toDate = (new RequestArgumentsHandler()).parseDate(
@@ -47,10 +47,10 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
                 now.getYear(),
                 now.getMonthValue(),
                 now.getDayOfMonth(),
-                defaultDateFormat,
+                Invoices.defaultDateFormat,
                 info);
 
-        buildDateCriteria(criteriaBuilder, invoices, predicates,fromDate,toDate);
+        buildDateCriteria(criteriaBuilder, invoices, predicates, fromDate, toDate);
 
         query.select(criteriaBuilder.sum(invoices.get("amount")));
 
@@ -69,11 +69,11 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         return namount;
     }
 
-    private void buildDateCriteria( CriteriaBuilder criteriaBuilder,
-                                    Root<Invoices> invoices,
-                                    List<Predicate> predicates,
-                                    Date startDate,
-                                    Date endDate){
+    private void buildDateCriteria(CriteriaBuilder criteriaBuilder,
+                                   Root<Invoices> invoices,
+                                   List<Predicate> predicates,
+                                   Date startDate,
+                                   Date endDate) {
         Predicate startDatePredicate = criteriaBuilder.greaterThanOrEqualTo(invoices.get(
                 "created_at").as(java.sql.Date.class), startDate);
         predicates.add(startDatePredicate);
@@ -92,58 +92,43 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = criteriaBuilder.createTupleQuery();
-        Root<Invoices> root = query.from(Invoices.class);
-        Join<Invoices, Invoices_payments> join = root.join("invoices_payments");
+        Root<Invoices> invoices = query.from(Invoices.class);
+        Join<Invoices, Invoices_payments> join = invoices.join("invoices_payments");
 
         List<Predicate> predicates = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        ArgumentDateParseResult info = new ArgumentDateParseResult();
 
-        // String info = (new RequestArgumentsHandler()).getStringInfosDateformate(from, to, criteriaBuilder, invoices, predicates);
+        Date fromDate = (new RequestArgumentsHandler()).parseDate(from,
+                1970,
+                Calendar.JANUARY,
+                1,
+                Invoices.defaultDateFormat,
+                info);
 
-        java.util.Date startDate = null;
-        java.util.Date endDate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar cal = Calendar.getInstance();
-        String info = new String();
+        Date toDate = (new RequestArgumentsHandler()).parseDate(
+                to,
+                now.getYear(),
+                now.getMonthValue(),
+                now.getDayOfMonth(),
+                Invoices.defaultDateFormat,
+                info);
 
-        try {
-            startDate = dateFormat.parse(from);
-        } catch (Exception e) {
-            cal.set(Calendar.YEAR, 1970);
-            cal.set(Calendar.MONTH, Calendar.JANUARY);
-            cal.set(Calendar.DAY_OF_MONTH, 1);
-            startDate = cal.getTime();
-            info = "Could not parse startDate, using 1970-01-01";
+        buildDateCriteria(criteriaBuilder, invoices, predicates, fromDate, toDate);
+
+        for (int i = 0; i < predicates.size(); i++) {
+            query.where(predicates.toArray(new Predicate[i]));
         }
-        Predicate startDatePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get(
-                "created_at").as(java.sql.Date.class), startDate);
-        predicates.add(startDatePredicate);
-
-        try {
-            endDate = dateFormat.parse(to);
-        } catch (Exception e) {
-            LocalDateTime now = LocalDateTime.now();
-            cal.set(Calendar.YEAR, now.getYear());
-            cal.set(Calendar.MONTH, now.getMonthValue());
-            cal.set(Calendar.DAY_OF_MONTH, now.getDayOfMonth());
-            endDate = cal.getTime();
-            info = info + " Could not parse endDate, using " + endDate.toString();
-        }
-
-        Predicate toDatePredicate = criteriaBuilder.lessThanOrEqualTo(root.get(
-                "created_at").as(java.sql.Date.class), endDate);
-        predicates.add(toDatePredicate);
-
-        RequestArgumentsHandler.buildPradicateSize(query, predicates);
 
         query.multiselect(
-                criteriaBuilder.<Double>sum(root.get("amount")),
+                criteriaBuilder.<Double>sum(invoices.get("amount")),
                 join.get("currency")
         );
         query.groupBy(join.get("currency"));
 
         List<Tuple> tupleResult = entityManager.createQuery(query).getResultList();
 
-        return RequestArgumentsHandler.getCoinCurrencies(info, tupleResult);
+        return RequestArgumentsHandler.getCryptoCurrenciesTesting(tupleResult);
     }
 
     @Override
@@ -160,7 +145,9 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
                 root,
                 join));
 
-        RequestArgumentsHandler.buildPradicateSize(query, predicates);
+        for (int i = 0; i < predicates.size(); i++) {
+            query.where(predicates.toArray(new Predicate[i]));
+        }
 
         query.multiselect(
                 criteriaBuilder.<Double>sum(root.get("amount")),
