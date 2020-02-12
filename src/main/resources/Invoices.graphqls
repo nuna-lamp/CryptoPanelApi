@@ -5,7 +5,6 @@ schema {
 
 type Mutation {
     #The new mutation
-    createUser(name: String!, authProvider: AuthData!): User
     signinUser(auth: AuthData): SigninPayload
 }
 

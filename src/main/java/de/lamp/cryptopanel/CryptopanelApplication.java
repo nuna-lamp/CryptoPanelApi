@@ -33,7 +33,7 @@ public class CryptopanelApplication {
 
             User found = usersRepository.findOneByEmail("nuna@bopp.de");
            // if(found.getPassword().equals())
-            log.info(found.getEmail());
+//            log.info(found.getEmail());
 
          //   usersRepository.findAll();
 

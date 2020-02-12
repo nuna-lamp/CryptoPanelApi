@@ -2,10 +2,20 @@ package de.lamp.cryptopanel.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+import de.lamp.cryptopanel.model.GraphQLDataFetchers;
+import de.lamp.cryptopanel.model.GraphQLProvider;
 import de.lamp.cryptopanel.model.Invoices;
 import de.lamp.cryptopanel.repositories.InvoicesRepository;
 import graphql.ExecutionInput;
 import graphql.GraphQL;
+import graphql.GraphQLException;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -16,18 +26,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Controller    // This means that this class is a Controller
-@RequestMapping(path = "/")
 public class InvoicesController {
     @Autowired
     private InvoicesRepository repository;
     private GraphQL graphQL;
     private ObjectMapper objectMapper;
+    private GraphQLProvider provider;
 
+    @Autowired
     public InvoicesController(GraphQL graphQL, ObjectMapper objectMapper) {
         this.graphQL = graphQL;
         this.objectMapper = objectMapper;
@@ -36,21 +49,13 @@ public class InvoicesController {
     public InvoicesController() {
     }
 
+
+
     public InvoicesController(InvoicesRepository invoicesRepository) {
     }
 
-    // @ResponseBody means the returned String is the response, not a view name
-    // @RequestParam means it is a parameter from the GET or POST request
 
-    // @GetMapping(path = "/all")
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
-    @CrossOrigin
-    public @ResponseBody
-    Iterable<Invoices> getAllInvoices() {
-        return repository.findAll();
-    }
-
-    @RequestMapping(value = "/graphql", method = RequestMethod.GET)
+    @RequestMapping(value = "/graphql", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public @ResponseBody
     Map<String, Object> graphqlGET(@RequestParam("query") String query,
@@ -71,14 +76,26 @@ public class InvoicesController {
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/graphql", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/graphql", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
-    public Map<String, Object> graphql(@RequestBody Map<String, Object> body) {
+    public @ResponseBody
+    Map<String, Object> graphql(@RequestBody Map<String, Object> body,
+                                @RequestHeader("Authorization") String token
+                                   ) throws IOException {
+
         String query = (String) body.get("query");
 
         if (query == null) {
             query = "";
         }
+
+        if (token == null) {
+            token = "";
+        }
+        if(!token.equals("test123")){
+            throw new GraphQLException("Unauthorized");
+        }
+
 
         String operationName = (String) body.get("operationName");
         Map<String, Object> variables = (Map<String, Object>) body.get("variables");
@@ -86,6 +103,7 @@ public class InvoicesController {
         if (variables == null) {
             variables = new LinkedHashMap<>();
         }
+
 
         return executeGraphqlQuery(operationName, query, variables);
     }
@@ -96,6 +114,7 @@ public class InvoicesController {
                 .variables(variables)
                 .operationName(operationName)
                 .build();
+
 
         return graphQL.execute(executionInput).toSpecification();
     }

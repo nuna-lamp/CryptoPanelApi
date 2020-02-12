@@ -31,6 +31,7 @@ public class GraphQLProvider {
         this.graphQLDataFetchers = graphQLDataFetchers;
     }
 
+
     @PostConstruct
     public void init() throws IOException {
         URL url = Resources.getResource("Invoices.graphqls");
