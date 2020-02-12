@@ -27,6 +27,7 @@ public class GraphQLProvider {
 
     @Autowired
     public GraphQLProvider(GraphQLDataFetchers graphQLDataFetchers) {
+
         this.graphQLDataFetchers = graphQLDataFetchers;
     }
 
@@ -53,6 +54,8 @@ public class GraphQLProvider {
                         .dataFetcher("turnoverByDate", graphQLDataFetchers.getByDatesDataFetcher())
                         .dataFetcher("turnoverForCoins", graphQLDataFetchers.getByCoinsDataFetcher())
                         .dataFetcher("turnoverForEndpoints", graphQLDataFetchers.getByEndpointsDataFetcher()))
+                .type(newTypeWiring("Mutation")
+                        .dataFetcher("signinUser", graphQLDataFetchers.signinUserDataFetcher()))
 
                 .build();
     }

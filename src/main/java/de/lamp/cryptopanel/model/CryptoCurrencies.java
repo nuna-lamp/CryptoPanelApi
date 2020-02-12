@@ -7,4 +7,5 @@ public class CryptoCurrencies {
     public Double btc;
     public Double bch;
     public String info;
+
 }

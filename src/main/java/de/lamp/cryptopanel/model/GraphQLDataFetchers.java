@@ -1,6 +1,7 @@
 package de.lamp.cryptopanel.model;
 
 import de.lamp.cryptopanel.repositories.InvoicesRepository;
+import de.lamp.cryptopanel.repositories.UsersRepository;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,10 +17,13 @@ public class GraphQLDataFetchers {
 
     @Autowired
     private InvoicesRepository repository;
+    private UsersRepository usersRepository;
 
     @Autowired
-    public GraphQLDataFetchers(InvoicesRepository repository) {
+    public GraphQLDataFetchers(InvoicesRepository repository, UsersRepository usersRepository)
+    {
         this.repository = repository;
+        this.usersRepository = usersRepository;
     }
 
     private InvoicesRepository getRepository() {
@@ -66,5 +70,19 @@ public class GraphQLDataFetchers {
             return repository.getByEndpoints(dataFetchingEnvironment.getArguments());
         };
     }
+
+    public DataFetcher signinUserDataFetcher() {
+        return dataFetchingEnvironment -> {
+            //dataFetchingEnvironment.g
+            //String email =  dataFetchingEnvironment.getArgument("email");
+            //return usersRepository.findOneByEmail(email);
+
+            User user = usersRepository.findOneByEmail("nuna@bopp.de");
+
+            SigninPayload returnPayload = new SigninPayload(1234, user);
+            return returnPayload;
+        };
+    }
+
 }
 
