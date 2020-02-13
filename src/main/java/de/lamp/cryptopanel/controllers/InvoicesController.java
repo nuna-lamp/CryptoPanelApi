@@ -3,11 +3,15 @@ package de.lamp.cryptopanel.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
 import com.google.common.io.Resources;
+import de.lamp.cryptopanel.CryptopanelApplication;
 import de.lamp.cryptopanel.model.GraphQLDataFetchers;
 import de.lamp.cryptopanel.model.GraphQLProvider;
 import de.lamp.cryptopanel.model.Invoices;
+import de.lamp.cryptopanel.model.User;
 import de.lamp.cryptopanel.repositories.InvoicesRepository;
+import de.lamp.cryptopanel.repositories.UsersRepository;
 import graphql.ExecutionInput;
 import graphql.GraphQL;
 import graphql.GraphQLException;
@@ -16,6 +20,8 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -36,9 +42,13 @@ import java.util.Map;
 public class InvoicesController {
     @Autowired
     private InvoicesRepository repository;
+    @Autowired
+    private UsersRepository usersRepository;
     private GraphQL graphQL;
     private ObjectMapper objectMapper;
     private GraphQLProvider provider;
+
+    private static final Logger log = (Logger) LoggerFactory.getLogger(CryptopanelApplication.class);
 
     @Autowired
     public InvoicesController(GraphQL graphQL, ObjectMapper objectMapper) {
@@ -49,9 +59,7 @@ public class InvoicesController {
     public InvoicesController() {
     }
 
-
-
-    public InvoicesController(InvoicesRepository invoicesRepository) {
+    public InvoicesController(InvoicesRepository invoicesRepository, UsersRepository usersRepository) {
     }
 
 
@@ -80,6 +88,7 @@ public class InvoicesController {
     @CrossOrigin
     public @ResponseBody
     Map<String, Object> graphql(@RequestBody Map<String, Object> body,
+                                @RequestHeader("userid") String userid,
                                 @RequestHeader("Authorization") String token
                                    ) throws IOException {
 
@@ -92,18 +101,34 @@ public class InvoicesController {
         if (token == null) {
             token = "";
         }
-        if(!token.equals("test123")){
-            throw new GraphQLException("Unauthorized");
+
+        if (userid == null) {
+            userid = "";
         }
 
+        User user = usersRepository.findOneById(Integer.parseInt(userid));
+        /*if(!token.equals(check)){
+            //throw new GraphQLException("Unauthorized");
+        }*/
 
         String operationName = (String) body.get("operationName");
         Map<String, Object> variables = (Map<String, Object>) body.get("variables");
 
-        if (variables == null) {
-            variables = new LinkedHashMap<>();
+        if(operationName == null || !operationName.equals("signIn")) {
+            if(user == null) {
+                throw new GraphQLException("Unauthorized");
+            } else if(!token.equals(user.getToken() )) {
+                throw new GraphQLException("Unauthorized");
+            }
         }
 
+        log.info(operationName);
+
+        if (variables == null) {
+            variables = new LinkedHashMap<>();
+        } else {
+            log.info(variables.toString());
+        }
 
         return executeGraphqlQuery(operationName, query, variables);
     }
@@ -115,13 +140,11 @@ public class InvoicesController {
                 .operationName(operationName)
                 .build();
 
-
         return graphQL.execute(executionInput).toSpecification();
     }
 
     public interface ChangeHandler {
         void onChange();
     }
-
 
 }

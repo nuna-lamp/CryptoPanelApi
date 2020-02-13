@@ -20,7 +20,7 @@ public class Mutation {
    public SigninPayload signinUser(AuthData auth){
        User user = usersRepository.findOneByEmail(auth.getEmail());
        if (user.getPassword().equals(auth.getPassword())){
-           return new SigninPayload(user.getId(2), user);
+           return new SigninPayload(user.getToken(), user);
        }
 
        return null;

@@ -1,5 +1,7 @@
 package de.lamp.cryptopanel.model;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
 import de.lamp.cryptopanel.repositories.InvoicesRepository;
 import de.lamp.cryptopanel.repositories.UsersRepository;
 import graphql.schema.DataFetcher;
@@ -78,8 +80,9 @@ public class GraphQLDataFetchers {
             //return usersRepository.findOneByEmail(email);
 
             User user = usersRepository.findOneByEmail("nuna@bopp.de");
+            String token = user.getToken();
 
-            SigninPayload returnPayload = new SigninPayload(1234, user);
+            SigninPayload returnPayload = new SigninPayload(token, user);
             return returnPayload;
         };
     }

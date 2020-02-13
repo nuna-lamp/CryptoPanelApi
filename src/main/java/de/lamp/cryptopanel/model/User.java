@@ -1,5 +1,8 @@
 package de.lamp.cryptopanel.model;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -19,6 +22,9 @@ public class User implements Serializable {
     public User(String name, String email, String password) {
     }
 
+    public static String secret = "sdfjadsjfdsjds";
+
+
     public User(int id, String name, String email, String password) {
         this.id = id;
         this.name = name;
@@ -26,7 +32,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public int getId(int i) {
+    public int getId() {
         return id;
     }
 
@@ -56,6 +62,10 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return Hashing.sha256().hashString( this.getId() + User.secret, Charsets.UTF_8 ).toString();
     }
 
 }
