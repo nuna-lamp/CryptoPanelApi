@@ -1,20 +1,17 @@
 package de.lamp.cryptopanel.helper;
 
 import de.lamp.cryptopanel.model.*;
-import de.lamp.cryptopanel.repositories.InvoicesRepositoryImpl;
-import org.checkerframework.checker.units.qual.A;
 import org.hamcrest.collection.IsMapContaining;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.junit.Assert;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.persistence.Tuple;
 import javax.persistence.TupleElement;
 import javax.persistence.criteria.*;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;

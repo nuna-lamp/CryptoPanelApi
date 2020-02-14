@@ -24,7 +24,6 @@ public class User implements Serializable {
 
     public static String secret = "sdfjadsjfdsjds";
 
-
     public User(int id, String name, String email, String password) {
         this.id = id;
         this.name = name;
