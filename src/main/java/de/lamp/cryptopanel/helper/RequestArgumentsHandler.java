@@ -1,20 +1,23 @@
 package de.lamp.cryptopanel.helper;
 
 
-import de.lamp.cryptopanel.model.*;
+import de.lamp.cryptopanel.model.ArgumentDateParseResult;
+import de.lamp.cryptopanel.model.CryptoCurrencies;
+import de.lamp.cryptopanel.model.Endpoint;
+import de.lamp.cryptopanel.model.Invoices;
 
 import javax.persistence.Tuple;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class RequestArgumentsHandler {
 
     public List<Predicate> buildPredicateListForFromArguments(Map<String, Object> arguments,
                                                               CriteriaBuilder criteriaBuilder,
-                                                              Root<Invoices> root,
-                                                              Join<Invoices, Invoices_payments> joinMock) {
+                                                              Root<Invoices> root) {
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -101,12 +104,6 @@ public class RequestArgumentsHandler {
         }
 
         return coins;
-    }
-
-    public static void getStatusTesting(String status, CriteriaBuilder criteriaBuilder, Root<Invoices> invoices, List<Predicate> predicates) {
-        if (!(null == status || status.equals(""))) {
-            predicates.add(criteriaBuilder.equal(invoices.get("status"), status));
-        }
     }
 
 }

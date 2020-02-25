@@ -5,16 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.lamp.cryptopanel.CryptopanelApplication;
 import de.lamp.cryptopanel.helper.AuthenticationHandler;
 import de.lamp.cryptopanel.model.GraphQLProvider;
-import de.lamp.cryptopanel.model.User;
-import de.lamp.cryptopanel.repositories.InvoicesRepository;
-import de.lamp.cryptopanel.repositories.UsersRepository;
 import graphql.ExecutionInput;
 import graphql.GraphQL;
 import graphql.GraphQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,27 +20,20 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Controller    // This means that this class is a Controller
-public class InvoicesController {
+public class GraphQLController {
     @Autowired
-    private InvoicesRepository repository;
+    private AuthenticationHandler authenticationHandler;
     @Autowired
-    private UsersRepository usersRepository;
     private GraphQL graphQL;
+    @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
     private GraphQLProvider provider;
 
     private static final Logger log = (Logger) LoggerFactory.getLogger(CryptopanelApplication.class);
 
-    @Autowired
-    public InvoicesController(GraphQL graphQL, ObjectMapper objectMapper) {
-        this.graphQL = graphQL;
-        this.objectMapper = objectMapper;
-    }
+    public GraphQLController() {
 
-    public InvoicesController() {
-    }
-
-    public InvoicesController(InvoicesRepository invoicesRepository, UsersRepository usersRepository) {
     }
 
     @RequestMapping(value = "/graphql", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,7 +79,6 @@ public class InvoicesController {
             userid = "";
         }
 
-        User user = usersRepository.findOneById(Integer.parseInt(userid));
         String operationName = (String) body.get("operationName");
         Map<String, Object> variables = (Map<String, Object>) body.get("variables");
         log.info(operationName);
@@ -101,9 +89,7 @@ public class InvoicesController {
             log.info(variables.toString());
         }
 
-        AuthenticationHandler authenticationHandler = new AuthenticationHandler();
-
-        if(!authenticationHandler.validateRequestAuthentication(operationName, token, user)) {
+        if(!authenticationHandler.validateRequestAuthentication(operationName, token, Integer.parseInt(userid))) {
             throw new GraphQLException("Unauthorized");
         }
 
@@ -122,33 +108,6 @@ public class InvoicesController {
     }
 
 }
-
-/*
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/user/getEmployeesList")
-                .hasAnyRole("ADMIN").anyRequest().authenticated().and().formLogin()
-                .permitAll().and().logout().permitAll();
-
-        http.csrf().disable();
-    }
-
-
-    public void configure(AuthenticationManagerBuilder authenticationMgr) throws Exception {
-        authenticationMgr.inMemoryAuthentication().withUser("admin").password("admin")
-                .authorities("ROLE_ADMIN");
-    }
-
-    @Configuration
-    @EnableAuthorizationServer
-    public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
-
-             public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            clients.inMemory().withClient("javainuse").secret("secret").authorizedGrantTypes("authorization_code")
-                    .scopes("read").authorities("CLIENT");
-        }
-    }
-
- */
 
 
 

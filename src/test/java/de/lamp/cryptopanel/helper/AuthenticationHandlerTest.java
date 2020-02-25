@@ -1,6 +1,7 @@
 package de.lamp.cryptopanel.helper;
 
 import de.lamp.cryptopanel.model.*;
+import graphql.GraphQLException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,9 +42,13 @@ class AuthenticationHandlerTest {
         String operationName = "sendthemoney";
         String token = "test12345";
 
-        boolean result = new AuthenticationHandler().validateRequestAuthentication(operationName, token, user);
+        try {
+            boolean result = new AuthenticationHandler().validateRequestAuthentication(operationName, token, user);
+            Assert.assertEquals(result, false);
+        } catch (GraphQLException anGraphQLException) {
+            Assert.assertEquals(anGraphQLException.getMessage(), new GraphQLException("Unauthorized").getMessage());
+        }
 
-        Assert.assertEquals(result, false);
     }
 
     @Test

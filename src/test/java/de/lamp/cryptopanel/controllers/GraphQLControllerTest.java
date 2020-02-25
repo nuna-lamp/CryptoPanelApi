@@ -12,24 +12,20 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-class InvoicesControllerTest {
+class GraphQLControllerTest {
 
     private GraphQL graphQLMock;
     private ObjectMapper objectMapperMock;
     private GraphQLProvider graphQLProviderMock;
-
-    private InvoicesController invoicesControllerMock;
-    private UsersRepository usersRepositoryMock;
-    private InvoicesRepository invoicesRepositoryMock;
+    private GraphQLController graphQLControllerMock;
 
     @BeforeEach
     public void setup() {
         graphQLMock = Mockito.mock(GraphQL.class);
         objectMapperMock = Mockito.mock(ObjectMapper.class);
         graphQLProviderMock = Mockito.mock(GraphQLProvider.class);
-        invoicesControllerMock = Mockito.mock(InvoicesController.class);
-        invoicesRepositoryMock = Mockito.mock(InvoicesRepository.class);
-        usersRepositoryMock = Mockito.mock(UsersRepository.class);
+        graphQLControllerMock = Mockito.mock(GraphQLController.class);
+
     }
 
     @Test

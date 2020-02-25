@@ -3,7 +3,6 @@ package de.lamp.cryptopanel.repositories;
 import de.lamp.cryptopanel.model.Amount;
 import de.lamp.cryptopanel.model.CryptoCurrencies;
 import de.lamp.cryptopanel.model.Endpoint;
-import de.lamp.cryptopanel.model.Invoices;
 
 import java.util.List;
 import java.util.Map;

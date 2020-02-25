@@ -4,9 +4,11 @@ import de.lamp.cryptopanel.helper.RequestArgumentsHandler;
 import de.lamp.cryptopanel.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -17,7 +19,6 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
 
     @PersistenceContext
     EntityManager entityManager;
-
 
     @Override
     public Amount getByDates(
@@ -53,8 +54,6 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         buildDateCriteria(criteriaBuilder, invoices, predicates, fromDate, toDate);
 
         query.select(criteriaBuilder.sum(invoices.get("amount")));
-
-        RequestArgumentsHandler.getStatusTesting(status, criteriaBuilder, invoices, predicates);
 
         for (int i = 0; i < predicates.size(); i++) {
             query.where(predicates.toArray(new Predicate[i]));
@@ -142,8 +141,7 @@ public class InvoicesRepositoryImpl implements InvoiceRepositoryCustom {
         List<Predicate> predicates = (new RequestArgumentsHandler().buildPredicateListForFromArguments(
                 arguments,
                 criteriaBuilder,
-                root,
-                join));
+                root));
 
         for (int i = 0; i < predicates.size(); i++) {
             query.where(predicates.toArray(new Predicate[i]));

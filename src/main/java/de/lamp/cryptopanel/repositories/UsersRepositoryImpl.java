@@ -2,9 +2,6 @@ package de.lamp.cryptopanel.repositories;
 
 import de.lamp.cryptopanel.model.AuthData;
 import de.lamp.cryptopanel.model.User;
-import de.lamp.cryptopanel.repositories.UsersRepository;
-import graphql.GraphQLException;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
@@ -19,11 +16,6 @@ public class UsersRepositoryImpl implements UserRepositoryCustom {
     @Autowired
     UsersRepository userRepository;
     AuthData authData;
-
-    /*@Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }*/
 
     @Override
     public List<User> findById(int id) {

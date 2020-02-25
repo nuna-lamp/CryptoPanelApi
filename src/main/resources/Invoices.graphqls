@@ -4,8 +4,7 @@ schema {
 }
 
 type Mutation {
-    #The new mutation
-    signinUser(auth: AuthData): SigninPayload
+      signinUser(auth: AuthData): SigninPayload
 }
 
 type User {
@@ -52,21 +51,11 @@ type CryptoCurrencies{
     info: String
 }
 
-enum Status {
-    Open
-    Paid
-    Expired
-}
-
 enum Currency{
     DASH
     BTC
     LTC
     BCH
-}
-
-type InvoiceList{
-    sumAmount: Float
 }
 
 type Invoice {

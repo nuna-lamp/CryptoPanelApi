@@ -1,7 +1,6 @@
 package de.lamp.cryptopanel.helper;
 
 import de.lamp.cryptopanel.model.*;
-import org.hamcrest.collection.IsMapContaining;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.matchesPattern;
 
 
@@ -93,39 +91,6 @@ class RequestArgumentsHandlerTest {
 
         Assert.assertEquals(result.size(), 2);
         Assert.assertEquals(result.get(0), null);
-
-    }
-
-    @Test
-    void getStatusTesting() {
-        HashMap<String, Object> arguments = new HashMap<>() {{
-            Map<String, String> map = new HashMap<>();
-            map.put("p1", "paid");
-            map.put("p2", "open");
-            map.put("p3", "expired");
-
-            Map<String, String> expected = new HashMap<>();
-            expected.put("p3", "expired");
-            expected.put("p1", "paid");
-            expected.put("p2", "open");
-
-            //1. Test equal, ignore order
-            Assert.assertThat(map, is(expected));
-            //2. Test size
-            Assert.assertThat(map.size(), is(3));
-            //3. Test map entry, best!
-            Assert.assertThat(map, IsMapContaining.hasEntry("p2", "paid"));
-            //4. Test map key
-            Assert.assertThat(map, IsMapContaining.hasKey("p1"));
-            //5. Test map value
-            Assert.assertThat(map, IsMapContaining.hasValue("paid"));
-
-        }};
-        List<Predicate> result = (new RequestArgumentsHandler()).buildPredicateListForFromArguments(
-                arguments,
-                criteriaBuilderMock,
-                invoiceRootMock,
-                joinMock);
 
     }
 

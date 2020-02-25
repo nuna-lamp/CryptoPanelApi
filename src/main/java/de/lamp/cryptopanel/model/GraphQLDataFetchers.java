@@ -2,14 +2,19 @@ package de.lamp.cryptopanel.model;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import de.lamp.cryptopanel.CryptopanelApplication;
 import de.lamp.cryptopanel.repositories.InvoicesRepository;
 import de.lamp.cryptopanel.repositories.UsersRepository;
 import graphql.schema.DataFetcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 @Component
 public class GraphQLDataFetchers {
@@ -75,11 +80,11 @@ public class GraphQLDataFetchers {
 
     public DataFetcher signinUserDataFetcher() {
         return dataFetchingEnvironment -> {
-            //dataFetchingEnvironment.g
-            //String email =  dataFetchingEnvironment.getArgument("email");
-            //return usersRepository.findOneByEmail(email);
+            HashMap auth = dataFetchingEnvironment.getArgument("auth");
 
-            User user = usersRepository.findOneByEmail("nuna@bopp.de");
+            String email = auth.get("email").toString();
+
+            User user = usersRepository.findOneByEmail(email);
             String token = user.getToken();
 
             SigninPayload returnPayload = new SigninPayload(token, user);
